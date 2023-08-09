@@ -1,4 +1,5 @@
 require('dotenv').config()
+global.__basedir = __dirname;
 const http = require('http')
 const path = require('path')
 const rfs = require('rotating-file-stream')
