@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { register, otp } = require('../controllers/auth')
+const { register, otpRegister } = require('../controllers/auth')
 const {
     register: registerValidator,
     otp: otpValidator,
@@ -8,6 +8,6 @@ const {
 const router = Router()
 
 router.post('/register', registerValidator(), validate, register)
-router.post('/otp', otpValidator(), validate, otp)
+router.post('/otp/register', otpValidator(), validate, otpRegister)
 
 module.exports = router

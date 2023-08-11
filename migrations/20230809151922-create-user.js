@@ -51,6 +51,9 @@ module.exports = {
       otp: {
         type: Sequelize.STRING
       },
+      otp_exp: {
+        type: Sequelize.INTEGER
+      },
       id_card: {
         type: Sequelize.STRING
       },

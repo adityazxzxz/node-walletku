@@ -10,7 +10,7 @@ function writeInfoLog(description, message) {
 
 // Fungsi untuk menulis log kesalahan
 function writeErrorLog(description, error) {
-    const logMessage = `[ERROR][${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}] ${description} - ${error.stack}\n`;
+    const logMessage = `[ERROR][${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}] ${description} - ${error} ${error.stack}\n`;
     writeLog('error.log', logMessage);
 }
 
