@@ -12,6 +12,9 @@ const router = require('./routes/index.js')
 const port = process.env.APP_PORT || 8000
 const app = express()
 
+var jsonParser = bodyParser.json()
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 var accessLogStream = rfs.createStream('access.log', {
     interval: '1d', // rotate daily
     path: path.join(__dirname, 'logs')
@@ -27,7 +30,7 @@ morgan.format('myformat', '[:date] ":method :url" :status :remote-addr - :remote
 app.use(morgan('myformat', { stream: accessLogStream }))
 app.use(cors())
 app.use(helmet());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(jsonParser);
 app.use('/api/v1', router)
 
 var httpServer = http.createServer(app);

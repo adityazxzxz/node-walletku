@@ -1,5 +1,8 @@
 const argon2 = require('argon2');
-const logger = require('./logger')
+const logger = require('./logger');
+const CryptoJS = require('crypto-js');
+
+const key = process.env.ENCRYPT_KEY
 
 // Contoh fungsi untuk meng-hash password
 const hashPassword = async (password) => {
@@ -23,7 +26,19 @@ const verifyPassword = async (hashedPassword, password) => {
     }
 }
 
+const encryptPin = (pin) => {
+    const encryptedPin = CryptoJS.AES.encrypt(pin, key).toString();
+    return encryptedPin;
+};
+
+const decryptPin = (encryptedPin) => {
+    const decryptedPin = CryptoJS.AES.decrypt(encryptedPin, key).toString(CryptoJS.enc.Utf8);
+    return decryptedPin
+}
+
 module.exports = {
     hashPassword,
-    verifyPassword
+    verifyPassword,
+    encryptPin,
+    decryptPin
 }

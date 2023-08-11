@@ -2,29 +2,68 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Customers', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      fullName: {
+      fullname: {
         type: Sequelize.STRING
       },
-      birthDate: {
+      birthdate: {
         type: Sequelize.DATE
       },
       email: {
+        type: Sequelize.STRING
+      },
+      pin: {
+        type: Sequelize.STRING
+      },
+      status: {
+        type: Sequelize.INTEGER
+      },
+      mother_name: {
+        type: Sequelize.STRING
+      },
+      job: {
+        type: Sequelize.STRING
+      },
+      company_name: {
+        type: Sequelize.STRING
+      },
+      company_address: {
+        type: Sequelize.STRING
+      },
+      position: {
+        type: Sequelize.STRING
+      },
+      salary_min: {
+        type: Sequelize.INTEGER
+      },
+      salary_max: {
+        type: Sequelize.INTEGER
+      },
+      marital_status: {
+        type: Sequelize.INTEGER
+      },
+      otp: {
+        type: Sequelize.STRING
+      },
+      id_card: {
+        type: Sequelize.STRING
+      },
+      id_card_image: {
+        type: Sequelize.STRING
+      },
+      selfie_image: {
         type: Sequelize.STRING
       },
       avatar: {
         type: Sequelize.STRING
       },
       phone: {
-        type: Sequelize.INTEGER
-      },
-      password: {
         type: Sequelize.STRING
       },
       address: {
@@ -39,15 +78,19 @@ module.exports = {
       city: {
         type: Sequelize.STRING
       },
-      zipCode: {
+      zipcode: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      deleted_at: {
+        allowNull: true,
         type: Sequelize.DATE
       }
     });
