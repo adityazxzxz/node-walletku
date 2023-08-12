@@ -19,6 +19,18 @@ const register = async (req, res) => {
         let password = decryptPin(req.body.password)
         let pin = decryptPin(req.body.pin)
 
+        let cust = JSON.parse(JSON.stringify(Customer.findOne({
+            where: {
+                phone: req.body.phone
+            }
+        })))
+
+        if (cust) {
+            return res.status(401).json({
+                message: 'Phone already registered, please try another phone number'
+            })
+        }
+
         await Customer.create({
             ...req.body,
             password: await hashPassword(password),
