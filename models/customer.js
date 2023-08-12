@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     selfie_image: DataTypes.STRING,
     email: DataTypes.STRING,
     pin: DataTypes.STRING,
+    password: DataTypes.STRING,
     status: {
       type: DataTypes.INTEGER,
       defaultValue: 0

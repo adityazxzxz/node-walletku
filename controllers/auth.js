@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { writeInfoLog, writeErrorLog } = require('../helpers/logger')
-const { encryptPin, decryptPin } = require('../helpers/encrypt')
+const { encryptPin, decryptPin, hashPassword, verifyPassword } = require('../helpers/encrypt')
 const { randomNumber } = require('../helpers/utils')
 const { Customer } = require('../models/index')
 
@@ -15,25 +15,30 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        let otpraw = randomNumber(6).toString()
-        let otp = encryptPin(otpraw)
+        let otp_generate = randomNumber(6).toString()
+        let password = decryptPin(req.body.password)
+        let pin = decryptPin(req.body.pin)
 
         await Customer.create({
             ...req.body,
+            password: await hashPassword(password),
+            pin: await hashPassword(pin),
             status: 0,
-            otp,
+            otp: await hashPassword(otp_generate),
             otp_exp: Math.floor(Date.now() / 1000) + parseInt(periodExpOTP)
         })
 
         // send otp
-
+        writeInfoLog(`Register new customer`, req.body.phone)
         return res.status(200).json({
             message: 'OTP code will send to your phone number',
             ...(process.env.NODE_ENV !== 'production' ? {
                 devMode: {
                     msg: 'Only for test and development',
-                    otp: otpraw,
-                    otp_encrypted: otp
+                    password: decryptPin(req.body.password),
+                    pin: decryptPin(req.body.pin),
+                    otp: otp_generate,
+                    otp_encrypted: encryptPin(otp_generate)
                 }
             } : null)
         })
@@ -51,7 +56,6 @@ const otpRegister = async (req, res) => {
         const cust = JSON.parse(JSON.stringify(await Customer.findOne({
             where: {
                 phone: req.body.phone,
-                otp: req.body.otp,
                 status: 0
             }
         })))
@@ -62,15 +66,11 @@ const otpRegister = async (req, res) => {
         }
 
 
-
         if (cust.otp_exp < Math.floor(Date.now() / 1000)) {
+            let otp_generate = randomNumber(6).toString()
 
-            // resend otp
-
-            let otpraw = randomNumber(6).toString()
-            let otp = encryptPin(otpraw)
             await Customer.update({
-                otp,
+                otp: hashPassword(otp_generate),
                 otp_exp: Math.floor(Date.now() / 1000) + parseInt(periodExpOTP)
             }, {
                 where: {
@@ -78,15 +78,25 @@ const otpRegister = async (req, res) => {
                 }
             })
 
+            // resend otp
+
             return res.status(400).json({
                 message: 'OTP expired',
                 ...(process.env.NODE_ENV !== 'production' ? {
                     devMode: {
                         msg: 'New OTP Only for test and development',
-                        otp: otpraw,
-                        otp_encrypted: otp,
+                        otp: otp_generate,
+                        otp_encrypted: encryptPin(otp_generate),
                     }
                 } : null)
+            })
+        }
+
+        const verifyotp = await verifyPassword(cust.otp, decryptPin(req.body.otp))
+
+        if (!verifyotp) {
+            return res.status(401).json({
+                message: 'OTP invalid'
             })
         }
 

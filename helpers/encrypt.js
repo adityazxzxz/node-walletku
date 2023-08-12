@@ -1,5 +1,5 @@
 const argon2 = require('argon2');
-const logger = require('./logger');
+const { writeErrorLog } = require('./logger');
 const CryptoJS = require('crypto-js');
 
 const key = process.env.ENCRYPT_KEY

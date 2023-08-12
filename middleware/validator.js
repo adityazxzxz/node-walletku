@@ -6,8 +6,12 @@ const register = () => {
     return [
         body('email').isEmail(),
         body('pin').custom(async value => {
-            if (decryptPin(value).length < 6)
+            if (value.length < 1 || decryptPin(value).length < 6)
                 throw new Error('Pin must be 6 digits')
+        }),
+        body('password').custom(async value => {
+            if (value.length < 1 || decryptPin(value).length < 6)
+                throw new Error('Password must be more than 6 digits')
         }),
         body('fullname').isLength({ min: 1 }).withMessage(' is empty'),
         body('id_card').isLength({ min: 16 }).withMessage('must min 16 digits'),
@@ -28,6 +32,10 @@ const otp = () => {
 const login = () => {
     return [
         body('phone').isNumeric(),
+        body('password').custom(async value => {
+            if (value.length < 1 || decryptPin(value).length < 1)
+                throw new Error('Password not be empty')
+        }),
     ]
 }
 

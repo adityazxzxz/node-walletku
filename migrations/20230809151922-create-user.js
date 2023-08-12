@@ -21,6 +21,9 @@ module.exports = {
       pin: {
         type: Sequelize.STRING
       },
+      password: {
+        type: Sequelize.STRING
+      },
       status: {
         type: Sequelize.INTEGER
       },
