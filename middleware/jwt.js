@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { writeErrorLog } = require('../helpers/logger')
+const jwtKey = process.env.JWT_KEY || 'secretKey'
 
 const verifyToken = async (req, res) => {
     const token = req.header('Authorization');
@@ -7,7 +8,7 @@ const verifyToken = async (req, res) => {
         return res.status(401).json({ message: 'Token not provided' });
     }
     try {
-        const decoded = jwt.verify(token, 'secretKey'); // Ganti 'secretKey' dengan kunci rahasia yang sama
+        const decoded = jwt.verify(token, jwtKey); // Ganti 'secretKey' dengan kunci rahasia yang sama
         req.user = decoded;
         next();
     } catch (error) {
@@ -20,8 +21,8 @@ const signToken = async (payload) => {
     try {
         const minutes = 5 // in minutes
         const expiresIn = Math.floor(Date.now() / 1000) + (60 * minutes)
-        const accessToken = jwt.sign({ data: payload }, 'secretKey', { expiresIn });
-        const refreshToken = jwt.sign({ data: payload }, 'secretKey');
+        const accessToken = jwt.sign({ data: payload }, jwtKey, { expiresIn });
+        const refreshToken = jwt.sign({ data: payload }, jwtKey);
         return { exp: expiresIn, accessToken, refreshToken }
     } catch (error) {
         return error
