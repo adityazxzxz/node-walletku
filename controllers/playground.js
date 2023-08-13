@@ -1,9 +1,9 @@
-const { encryptPin, decryptPin } = require('../helpers/encrypt')
+const { encrypt: encryptFunc, decrypt: decryptFunc } = require('../helpers/encrypt')
 
 
 const encrypt = async (req, res) => {
     try {
-        const pin = encryptPin(req.body.pin)
+        const pin = encryptFunc(req.body.pin)
         return res.status(200).json({
             pin: req.body.pin,
             ecnryptPin: pin
@@ -17,9 +17,9 @@ const encrypt = async (req, res) => {
 
 const decrypt = async (req, res) => {
     try {
-        const pin = await decryptPin(req.body.pin, 'susuultra')
+        const pin = await decryptFunc(req.body.pin)
         return res.status(200).json({
-            encryptPin: req.body.pin,
+            encrypt: req.body.pin,
             pin: pin
         })
     } catch (error) {

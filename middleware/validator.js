@@ -1,16 +1,16 @@
 const { body, checkSchema, param, query, validationResult, check } = require('express-validator')
-const { decryptPin } = require('../helpers/encrypt')
+const { decrypt } = require('../helpers/encrypt')
 
 // Start Register Validator
 const register = () => {
     return [
         body('email').isEmail(),
         body('pin').custom(async value => {
-            if (value.length < 1 || decryptPin(value).length < 6)
+            if (value.length < 1 || decrypt(value).length < 6)
                 throw new Error('Pin must be 6 digits')
         }),
         body('password').custom(async value => {
-            if (value.length < 1 || decryptPin(value).length < 6)
+            if (value.length < 1 || decrypt(value).length < 6)
                 throw new Error('Password must be more than 6 digits')
         }),
         body('fullname').isLength({ min: 1 }).withMessage(' is empty'),
@@ -22,7 +22,7 @@ const register = () => {
 const otp = () => {
     return [
         body('otp').custom(async value => {
-            if (decryptPin(value).length < 6)
+            if (decrypt(value).length < 6)
                 throw new Error('OTP must be 6 digits')
         }),
     ]
@@ -31,10 +31,12 @@ const otp = () => {
 // Start Login Validator
 const login = () => {
     return [
-        body('phone').isNumeric(),
+        body('phone').isNumeric().withMessage('Must be a number'),
         body('password').custom(async value => {
-            if (value.length < 1 || decryptPin(value).length < 1)
+            if (typeof value == 'undefined' || value.length < 1 || decrypt(value).length < 1)
                 throw new Error('Password not be empty')
+            if (decrypt(value).length < 8)
+                throw new Error('Password must be min 8 char')
         }),
     ]
 }

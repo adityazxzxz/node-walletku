@@ -16,4 +16,16 @@ const verifyToken = async (req, res) => {
     }
 }
 
-module.exports = { verifyToken }
+const signToken = async (payload) => {
+    try {
+        const minutes = 5 // in minutes
+        const expiresIn = Math.floor(Date.now() / 1000) + (60 * minutes)
+        const accessToken = jwt.sign({ data: payload }, 'secretKey', { expiresIn });
+        const refreshToken = jwt.sign({ data: payload }, 'secretKey');
+        return { exp: expiresIn, accessToken, refreshToken }
+    } catch (error) {
+        return error
+    }
+}
+
+module.exports = { verifyToken, signToken }
