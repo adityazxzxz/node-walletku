@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Merchant',
     updatedAt: 'updated_at',
-    createdAt: 'created_at'
+    createdAt: 'created_at',
+    tableName: 'merchant'
   });
   return Merchant;
 };
