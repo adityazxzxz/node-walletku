@@ -77,12 +77,16 @@ const register = async (req, res) => {
 
         }
 
+        let dataPin = await hashPassword(pin)
+        let dataOTP = await hashPassword(otp_generate)
+        let dataPassword = await hashPassword(password)
+
         await Customer.create({
             ...req.body,
-            password: await hashPassword(password),
-            pin: await hashPassword(pin),
+            password: dataPassword,
+            pin: dataPin,
             status: 0,
-            otp: await hashPassword(otp_generate),
+            otp: dataOTP,
             otp_exp: Math.floor(Date.now() / 1000) + parseInt(periodExpOTP)
         })
 
