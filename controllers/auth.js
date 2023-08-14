@@ -4,8 +4,8 @@ const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/e
 const { randomNumber } = require('../helpers/utils')
 const { signToken } = require('../middleware/jwt')
 const { Customer } = require('../models/index')
-
 let periodExpOTP = process.env.OTP_EXP || 1800 // sec
+
 
 const login = async (req, res) => {
     const { phone, password } = req.body
@@ -62,9 +62,24 @@ const register = async (req, res) => {
             }
         })))
         if (cust) {
-            return res.status(401).json({
-                message: 'Phone already registered, please try another phone number'
-            })
+            if (cust.status != 0) {
+                return res.status(401).json({
+                    message: 'Phone already registered, please try another phone number'
+                })
+            } else {
+                let { otp_generate, otp_encrypted } = await sendOtp(cust)
+                return res.status(200).json({
+                    message: 'Otp Sent',
+                    ...(process.env.NODE_ENV !== 'production' ? {
+                        devMode: {
+                            msg: 'Only for test and development',
+                            otp_generate,
+                            otp_encrypted
+                        }
+                    } : null)
+                })
+            }
+
         }
 
         await Customer.create({
@@ -116,7 +131,6 @@ const otpRegister = async (req, res) => {
 
         if (cust.otp_exp < Math.floor(Date.now() / 1000)) {
             let otp_generate = randomNumber(6).toString()
-
             await Customer.update({
                 otp: hashPassword(otp_generate),
                 otp_exp: Math.floor(Date.now() / 1000) + parseInt(periodExpOTP)
@@ -167,6 +181,27 @@ const otpRegister = async (req, res) => {
             message: 'Internal Error'
         })
     }
+}
+
+const sendOtp = (customer) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let otp_generate = randomNumber(6).toString()
+            let otp_encrypted = hashPassword(otp_generate)
+            let otp_expired = Math.floor(Date.now() / 1000) + parseInt(periodExpOTP)
+            let result = await Customer.update({
+                otp: otp_encrypted,
+                otp_exp: otp_expired
+            }, {
+                where: {
+                    id: customer.id
+                }
+            })
+            resolve({ otp_generate, otp_encrypted, otp_expired, result })
+        } catch (error) {
+            reject(error)
+        }
+    })
 }
 
 module.exports = {
