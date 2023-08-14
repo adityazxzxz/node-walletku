@@ -123,7 +123,7 @@ const otpRegister = async (req, res) => {
         if (cust.otp_exp < Math.floor(Date.now() / 1000)) {
             let otp_generate = randomNumber(6).toString()
             await Customer.update({
-                otp: hashPassword(otp_generate),
+                otp: await hashPassword(otp_generate),
                 otp_exp: Math.floor(Date.now() / 1000) + parseInt(periodExpOTP)
             }, {
                 where: {
