@@ -67,16 +67,11 @@ const register = async (req, res) => {
                     message: 'Phone already registered, please try another phone number'
                 })
             } else {
+                // send otp because user not active. status = 0
                 let { otp_generate, otp_encrypted } = await sendOtp(cust)
+                writeInfoLog('Sent OTP', `Sent to ${cust.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + otp_encrypted : ''}`)
                 return res.status(200).json({
-                    message: 'Otp Sent',
-                    ...(process.env.NODE_ENV !== 'production' ? {
-                        devMode: {
-                            msg: 'Only for test and development',
-                            otp_generate,
-                            otp_encrypted
-                        }
-                    } : null)
+                    message: 'Otp Sent'
                 })
             }
 
@@ -187,10 +182,10 @@ const sendOtp = (customer) => {
     return new Promise(async (resolve, reject) => {
         try {
             let otp_generate = randomNumber(6).toString()
-            let otp_encrypted = hashPassword(otp_generate)
+            let otp_encrypted = encrypt(otp_generate)
             let otp_expired = Math.floor(Date.now() / 1000) + parseInt(periodExpOTP)
             let result = await Customer.update({
-                otp: otp_encrypted,
+                otp: await hashPassword(otp_generate),
                 otp_exp: otp_expired
             }, {
                 where: {
