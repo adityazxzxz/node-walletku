@@ -7,7 +7,7 @@ const register = () => {
         body('email').isEmail(),
         body('pin').custom(async value => {
             if (value.length < 1 || decrypt(value).length < 6)
-                throw new Error('Pin must be 6 digits')
+                throw new Error('must be 6 digits')
         }),
         body('password').custom(async value => {
             if (value.length < 1 || decrypt(value).length < 6)

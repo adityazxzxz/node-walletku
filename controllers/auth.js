@@ -88,17 +88,9 @@ const register = async (req, res) => {
 
         // send otp
         writeInfoLog(`Register new customer`, req.body.phone)
+        writeInfoLog('Sent OTP', `Sent to ${cust.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + otp_encrypted : ''}`)
         return res.status(200).json({
             message: 'OTP code will send to your phone number',
-            ...(process.env.NODE_ENV !== 'production' ? {
-                devMode: {
-                    msg: 'Only for test and development',
-                    password: decrypt(req.body.password),
-                    pin: decrypt(req.body.pin),
-                    otp: otp_generate,
-                    otp_encrypted: encrypt(otp_generate)
-                }
-            } : null)
         })
     } catch (error) {
         writeErrorLog('Register Error :', error)
