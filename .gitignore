@@ -1,5 +1,5 @@
 # asset
-uploads
+uploads/*.
 
 # Logs
 logs
