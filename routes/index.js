@@ -1,11 +1,11 @@
 const { Router, json } = require('express')
 const router = Router()
-const user = require('./user.js')
+const customer = require('./customer.js')
 const auth = require('./auth.js')
 const playground = require('./playground.js')
 
 router.use('/auth', auth)
-router.use('/user', user)
+router.use('/customer', customer)
 
 
 if (process.env.NODE_ENV != 'production') {
