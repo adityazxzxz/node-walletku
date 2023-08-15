@@ -1,5 +1,8 @@
 # asset
-uploads/*.
+uploads/*
+
+# except gitkeep
+!uploads/.gitkeep
 
 # Logs
 logs
