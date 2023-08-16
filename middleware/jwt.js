@@ -11,7 +11,7 @@ const verifyToken = async (req, res, next) => {
     try {
         const tokenString = token.split(' ')
         const decoded = jwt.verify(tokenString[1], jwtKey); // Ganti 'secretKey' dengan kunci rahasia yang sama
-        req.user = JSON.parse(decrypt(decoded.data));
+        req.customer = JSON.parse(decrypt(decoded.data));
         next();
     } catch (error) {
         writeErrorLog('Jwt Verification', error)

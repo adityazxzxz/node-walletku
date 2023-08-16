@@ -1,6 +1,7 @@
 const { writeInfoLog, writeErrorLog } = require('../helpers/logger')
 const multer = require('multer')
 const path = require('path')
+const { Customer } = require('../models/index')
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -30,14 +31,38 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-const uploadImage = (req, res) => {
+const uploadImage = async (req, res) => {
     // 'file' adalah nama field di form yang digunakan untuk meng-upload file
-    upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }])(req, res, (err) => {
-        if (err) {
-            return res.status(400).json({ error: err.message });
+    let customer = JSON.parse(JSON.stringify(await Customer.findOne({
+        where: {
+            id: req.customer.id,
+            status: 0
         }
-        return res.status(200).json({ message: 'File uploaded successfully' });
-    });
+    })))
+    if (!customer) {
+        return res.status(401).json({
+            message: 'Customer already request'
+        })
+    }
+    try {
+        upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }])(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ error: err.message });
+            }
+            await Customer.update({
+                id_card_image: req.files['id_card'][0].filename,
+                selfie_image: req.files['selfie'][0].filename,
+                status: 1
+            }, {
+                where: {
+                    id: req.customer.id
+                }
+            })
+            return res.status(200).json({ message: 'File uploaded successfully' });
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Error' });
+    }
 };
 
 module.exports = {
