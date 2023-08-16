@@ -1,15 +1,17 @@
 const jwt = require('jsonwebtoken');
 const { writeErrorLog } = require('../helpers/logger')
+const { decrypt } = require('../helpers/encrypt')
 const jwtKey = process.env.JWT_KEY || 'secretKey'
 
-const verifyToken = async (req, res) => {
+const verifyToken = async (req, res, next) => {
     const token = req.header('Authorization');
     if (!token) {
         return res.status(401).json({ message: 'Token not provided' });
     }
     try {
-        const decoded = jwt.verify(token, jwtKey); // Ganti 'secretKey' dengan kunci rahasia yang sama
-        req.user = decoded;
+        const tokenString = token.split(' ')
+        const decoded = jwt.verify(tokenString[1], jwtKey); // Ganti 'secretKey' dengan kunci rahasia yang sama
+        req.user = JSON.parse(decrypt(decoded.data));
         next();
     } catch (error) {
         writeErrorLog('Jwt Verification', error)
