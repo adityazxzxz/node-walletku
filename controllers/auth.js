@@ -92,7 +92,7 @@ const register = async (req, res) => {
 
         // send otp
         writeInfoLog(`Register new customer`, req.body.phone)
-        writeInfoLog('Sent OTP', `Sent to ${req.body.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + otp_encrypted : ''}`)
+        writeInfoLog('Sent OTP', `Sent to ${req.body.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + encrypt(otp_generate) : ''}`)
         return res.status(200).json({
             message: 'OTP code will send to your phone number',
         })
