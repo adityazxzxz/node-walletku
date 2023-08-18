@@ -81,7 +81,7 @@ const register = async (req, res) => {
         let dataOTP = await hashPassword(otp_generate)
         let dataPassword = await hashPassword(password)
 
-        await Customer.create({
+        let newCustomer = await Customer.create({
             ...req.body,
             password: dataPassword,
             pin: dataPin,
@@ -92,7 +92,7 @@ const register = async (req, res) => {
 
         // send otp
         writeInfoLog(`Register new customer`, req.body.phone)
-        writeInfoLog('Sent OTP', `Sent to ${cust.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + otp_encrypted : ''}`)
+        writeInfoLog('Sent OTP', `Sent to ${req.body.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + otp_encrypted : ''}`)
         return res.status(200).json({
             message: 'OTP code will send to your phone number',
         })
