@@ -87,6 +87,15 @@ module.exports = {
       zipcode: {
         type: Sequelize.INTEGER
       },
+      emergency_name: {
+        type: Sequelize.STRING
+      },
+      emergency_phone: {
+        type: Sequelize.STRING
+      },
+      plat_no: {
+        type: Sequelize.STRING
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

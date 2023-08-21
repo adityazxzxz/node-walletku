@@ -12,6 +12,20 @@ const phoneRegister = () => {
     ]
 }
 
+const personalData = () => {
+    return [
+        body('fullname').isLength({ min: 1 }),
+        body('email').isLength({ min: 1 }),
+        body('plat_no').isLength({ min: 1 }),
+        body('province').isLength({ min: 1 }),
+        body('city').isLength({ min: 1 }),
+        body('zipcode').isLength({ min: 1 }),
+        body('address').isLength({ min: 1 }),
+        body('emergency_name').isLength({ min: 1 }),
+        body('emergency_phone').isLength({ min: 1 })
+    ]
+}
+
 const register = () => {
     return [
         body('email').isEmail(),
@@ -78,5 +92,6 @@ module.exports = {
     register,
     phoneRegister,
     login,
-    otp
+    otp,
+    personalData
 }

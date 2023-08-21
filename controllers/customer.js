@@ -3,6 +3,43 @@ const multer = require('multer')
 const path = require('path')
 const { Customer } = require('../models/index')
 
+const updatePersonal = async (req, res) => {
+    try {
+        let { fullname, email, no_plat, province, city, zipcode, address, emergency_name, emergency_phone } = req.body
+        let cust = JSON.parse(JSON.stringify(await Customer.findOne({
+            where: {
+                id: req.customer.id,
+                status: 0
+            }
+        })))
+        await Customer.update({
+            fullname,
+            email,
+            no_plat,
+            province,
+            city,
+            zipcode,
+            address,
+            emergency_name,
+            emergency_phone,
+            status: 1
+        }, {
+            where: {
+                id: req.customer.id
+            }
+        })
+
+        return res.status(200).json({
+            message: 'Personal data has been updated'
+        })
+    } catch (error) {
+        writeErrorLog('Personal Data', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/') // Ganti dengan lokasi penyimpanan yang Anda inginkan
@@ -49,22 +86,29 @@ const uploadImage = async (req, res) => {
             if (err) {
                 return res.status(400).json({ error: err.message });
             }
-            await Customer.update({
-                id_card_image: req.files['id_card'][0].filename,
-                selfie_image: req.files['selfie'][0].filename,
-                status: 1
-            }, {
-                where: {
-                    id: req.customer.id
-                }
-            })
-            return res.status(200).json({ message: 'File uploaded successfully' });
+            try {
+                await Customer.update({
+                    id_card_image: req.files['id_card'][0].filename,
+                    selfie_image: req.files['selfie'][0].filename,
+                    status: 1
+                }, {
+                    where: {
+                        id: req.customer.id
+                    }
+                })
+                return res.status(200).json({ message: 'File uploaded successfully' });
+            } catch (error) {
+                writeErrorLog('Upload Error', error)
+                return res.status(500).json({ message: 'Internal Error' });
+            }
         });
     } catch (error) {
+        writeErrorLog('Upload Error', error)
         return res.status(500).json({ message: 'Internal Error' });
     }
 };
 
 module.exports = {
-    uploadImage
+    uploadImage,
+    updatePersonal
 }

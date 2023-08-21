@@ -42,7 +42,10 @@ module.exports = (sequelize, DataTypes) => {
     country: DataTypes.STRING,
     province: DataTypes.STRING,
     city: DataTypes.STRING,
-    zipcode: DataTypes.INTEGER
+    zipcode: DataTypes.INTEGER,
+    emergency_name: DataTypes.STRING,
+    emergency_phone: DataTypes.STRING,
+    plat_no: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Customer',
