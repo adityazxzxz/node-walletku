@@ -5,7 +5,7 @@ const { Customer } = require('../models/index')
 
 const updatePersonal = async (req, res) => {
     try {
-        let { fullname, email, no_plat, province, city, zipcode, address, emergency_name, emergency_phone } = req.body
+        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone } = req.body
         let cust = JSON.parse(JSON.stringify(await Customer.findOne({
             where: {
                 id: req.customer.id,
