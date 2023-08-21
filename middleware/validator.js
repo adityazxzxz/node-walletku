@@ -2,6 +2,16 @@ const { body, checkSchema, param, query, validationResult, check } = require('ex
 const { decrypt } = require('../helpers/encrypt')
 
 // Start Register Validator
+const phoneRegister = () => {
+    return [
+        body('password').custom(async value => {
+            if (value.length < 1 || decrypt(value).length < 8)
+                throw new Error('Password must be more than 8 digits')
+        }),
+        body('phone').isLength({ min: 11 }).withMessage('must min 11 digits')
+    ]
+}
+
 const register = () => {
     return [
         body('email').isEmail(),
@@ -66,6 +76,7 @@ const validate = (req, res, next) => {
 module.exports = {
     validate,
     register,
+    phoneRegister,
     login,
     otp
 }
