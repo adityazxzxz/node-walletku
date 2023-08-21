@@ -15,7 +15,7 @@ const updatePersonal = async (req, res) => {
         await Customer.update({
             fullname,
             email,
-            no_plat,
+            plat_no,
             province,
             city,
             zipcode,
