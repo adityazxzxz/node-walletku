@@ -31,7 +31,7 @@ const phoneRegister = async (req, res) => {
                     message: 'Otp Sent'
                 })
             } else if (cust.status >= 1) {
-                return res.status(200).json({
+                return res.status(409).json({
                     message: 'User already exist'
                 })
             }
