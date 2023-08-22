@@ -2,23 +2,31 @@ const { writeInfoLog, writeErrorLog } = require('../helpers/logger')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs');
+const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
 const { Customer } = require('../models/index')
 
 const updatePersonal = async (req, res) => {
     try {
-        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone } = req.body
+        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone, pin } = req.body
+        pin = await hashPassword(decrypt(pin))
         let cust = JSON.parse(JSON.stringify(await Customer.findOne({
             where: {
                 id: req.customer.id,
                 status: 0
             }
         })))
+        if (!cust) {
+            return res.status(404).json({
+                message: 'User not found or already save personal data'
+            })
+        }
         await Customer.update({
             fullname,
             email,
             plat_no,
             province,
             city,
+            pin,
             zipcode,
             address,
             emergency_name,
