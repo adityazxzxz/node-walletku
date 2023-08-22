@@ -1,6 +1,7 @@
 const { writeInfoLog, writeErrorLog } = require('../helpers/logger')
 const multer = require('multer')
 const path = require('path')
+const fs = require('fs');
 const { Customer } = require('../models/index')
 
 const updatePersonal = async (req, res) => {
@@ -40,68 +41,49 @@ const updatePersonal = async (req, res) => {
     }
 }
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/') // Ganti dengan lokasi penyimpanan yang Anda inginkan
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    },
-    size: 20
-});
-
-const fileFilter = (req, file, cb) => {
-    // Filter file berdasarkan tipe MIME atau ekstensinya
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-        cb(null, true);
-    } else {
-        cb(new Error('Only JPEG and PNG files are allowed'), false);
-    }
-};
-
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024, // 1MB dalam bytes
-    },
-    fileFilter: fileFilter
-});
 
 const uploadImage = async (req, res) => {
-    // 'file' adalah nama field di form yang digunakan untuk meng-upload file
-    let customer = JSON.parse(JSON.stringify(await Customer.findOne({
-        where: {
-            id: req.customer.id,
-            status: 0
-        }
-    })))
-    if (!customer) {
-        return res.status(401).json({
-            message: 'Customer already request'
-        })
-    }
     try {
-        upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }])(req, res, async (err) => {
-            if (err) {
-                return res.status(400).json({ error: err.message });
+        const fileCount = Object.keys(req.files).length;
+        if (fileCount != 2) {
+            if (req.files) {
+                Object.values(req.files).forEach(files => {
+                    files.forEach(file => {
+                        fs.unlinkSync(file.path);
+                    });
+                });
             }
-            try {
-                await Customer.update({
-                    id_card_image: req.files['id_card'][0].filename,
-                    selfie_image: req.files['selfie'][0].filename,
-                    status: 1
-                }, {
-                    where: {
-                        id: req.customer.id
-                    }
-                })
-                return res.status(200).json({ message: 'File uploaded successfully' });
-            } catch (error) {
-                writeErrorLog('Upload Error', error)
-                return res.status(500).json({ message: 'Internal Error' });
+            return res.status(400).json({ message: 'Id card or selfie image not found' })
+        }
+
+        let customer = await Customer.findOne({
+            where: {
+                id: req.customer.id,
+                status: 0
             }
-        });
+        })
+        if (!customer) {
+            if (req.files) {
+                Object.values(req.files).forEach(files => {
+                    files.forEach(file => {
+                        fs.unlinkSync(file.path);
+                    });
+                });
+            }
+            return res.status(401).json({
+                message: 'Customer already request'
+            })
+        }
+
+        console.log(req.files.selfie)
+
+        customer.selfie_image = req.files.selfie[0].filename
+        customer.id_card_image = req.files.id_card[0].filename
+        customer.status = 1
+
+        await customer.save()
+
+        return res.status(200).json({ message: 'Upload succeed' });
     } catch (error) {
         writeErrorLog('Upload Error', error)
         return res.status(500).json({ message: 'Internal Error' });
