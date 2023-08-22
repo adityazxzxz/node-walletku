@@ -46,6 +46,8 @@ module.exports = (sequelize, DataTypes) => {
     emergency_name: DataTypes.STRING,
     emergency_phone: DataTypes.STRING,
     plat_no: DataTypes.STRING,
+    is_complete_profile: DataTypes.BOOLEAN,
+    is_complete_document: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Customer',

@@ -31,7 +31,8 @@ const updatePersonal = async (req, res) => {
             address,
             emergency_name,
             emergency_phone,
-            status: 1
+            status: 1,
+            is_complete_profile: 1
         }, {
             where: {
                 id: req.customer.id
@@ -67,7 +68,7 @@ const uploadImage = async (req, res) => {
         let customer = await Customer.findOne({
             where: {
                 id: req.customer.id,
-                status: 0
+                status: 1
             }
         })
         if (!customer) {
@@ -83,11 +84,10 @@ const uploadImage = async (req, res) => {
             })
         }
 
-        console.log(req.files.selfie)
-
         customer.selfie_image = req.files.selfie[0].filename
         customer.id_card_image = req.files.id_card[0].filename
         customer.status = 1
+        customer.is_complete_document = 1
 
         await customer.save()
 

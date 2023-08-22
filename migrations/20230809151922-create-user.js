@@ -96,6 +96,14 @@ module.exports = {
       plat_no: {
         type: Sequelize.STRING
       },
+      is_complete_profile: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      is_complete_document: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
