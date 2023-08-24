@@ -6,6 +6,30 @@ const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/e
 const { Customer } = require('../models/index')
 const upload = require('../middleware/upload')
 
+const checkKTP = async (req, res) => {
+    try {
+        let cust = Customer.findOne({
+            where: {
+                id_card: req.body.id_card
+            }
+        })
+        if (cust) {
+            return res.status(401).json({
+                message: 'KTP already exist'
+            })
+        } else {
+            return res.status(200).json({
+                message: 'KTP available'
+            })
+        }
+    } catch (error) {
+        writeErrorLog('Check KTP', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 const updatePersonal = async (req, res) => {
     try {
         let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone, pin } = req.body
@@ -198,5 +222,6 @@ module.exports = {
     updatePersonal,
     uploadKtp,
     uploadBpkb,
-    uploadSelfie
+    uploadSelfie,
+    checkKTP
 }

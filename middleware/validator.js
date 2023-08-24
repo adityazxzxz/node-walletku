@@ -26,6 +26,12 @@ const personalData = () => {
     ]
 }
 
+const ktpValidator = () => {
+    return [
+        body('id_card').isLength({ min: 1 })
+    ]
+}
+
 const register = () => {
     return [
         body('email').isEmail(),
@@ -93,5 +99,6 @@ module.exports = {
     phoneRegister,
     login,
     otp,
-    personalData
+    personalData,
+    ktpValidator
 }
