@@ -44,6 +44,7 @@ const getDistrict = async (req, res) => {
     try {
         let { city_id } = req.params
         let district = await District.findAll({
+            attributes: [['id', 'key'], ['dis_name', 'value']],
             where: {
                 city_id
             }
