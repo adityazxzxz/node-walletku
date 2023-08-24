@@ -13,7 +13,6 @@ const checkKTP = async (req, res) => {
                 id_card: req.body.id_card
             }
         })
-        console.log(cust)
         if (cust) {
             return res.status(401).json({
                 message: 'KTP already exist'
@@ -33,7 +32,7 @@ const checkKTP = async (req, res) => {
 
 const updatePersonal = async (req, res) => {
     try {
-        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone, pin } = req.body
+        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone, pin, district, id_card } = req.body
         pin = await hashPassword(decrypt(pin))
         let cust = JSON.parse(JSON.stringify(await Customer.findOne({
             where: {
@@ -48,10 +47,12 @@ const updatePersonal = async (req, res) => {
         }
         await Customer.update({
             fullname,
+            id_card,
             email,
             plat_no,
             province,
             city,
+            district,
             pin,
             zipcode,
             address,
