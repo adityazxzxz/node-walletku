@@ -24,6 +24,7 @@ const getCity = async (req, res) => {
     try {
         let { prov_id } = req.params
         let city = await City.findAll({
+            attributes: [['id', 'key'], ['city_name', 'value']],
             where: {
                 prov_id
             }
