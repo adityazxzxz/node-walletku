@@ -15,6 +15,7 @@ const phoneRegister = () => {
 const personalData = () => {
     return [
         body('fullname').isLength({ min: 1 }),
+        body('id_card').isLength({ min: 1 }),
         body('email').isLength({ min: 1 }),
         body('plat_no').isLength({ min: 1 }),
         body('province').isLength({ min: 1 }),

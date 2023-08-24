@@ -144,14 +144,14 @@ const login = async (req, res) => {
         })))
         if (!cust) {
             return res.status(404).json({
-                message: 'phone or password invalid'
+                message: 'phone not registered'
             })
         }
 
         const checkPassword = await verifyPassword(cust.password, decrypt(password))
         if (!checkPassword) {
             return res.status(401).json({
-                message: 'phone or password invalid'
+                message: 'password invalid'
             })
         }
         const payload = JSON.stringify({

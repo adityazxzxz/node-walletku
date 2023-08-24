@@ -13,6 +13,6 @@ router.post('/upload/ktp', verifyToken, upload.single('ktp'), uploadKtp)
 router.post('/upload/bpkb', verifyToken, upload.single('bpkb'), uploadBpkb)
 router.post('/upload/selfie', verifyToken, upload.single('selfie'), uploadSelfie)
 router.post('/personal_data', verifyToken, personalDataValidator(), validate, updatePersonal)
-router.post('/check_ktp', verifyToken, ktpValidator(), validate, checkKTP)
+router.post('/check_ktp', ktpValidator(), validate, checkKTP)
 
 module.exports = router
