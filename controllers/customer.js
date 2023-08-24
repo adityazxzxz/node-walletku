@@ -8,11 +8,12 @@ const upload = require('../middleware/upload')
 
 const checkKTP = async (req, res) => {
     try {
-        let cust = Customer.findOne({
+        let cust = await Customer.findOne({
             where: {
                 id_card: req.body.id_card
             }
         })
+        console.log(cust)
         if (cust) {
             return res.status(401).json({
                 message: 'KTP already exist'
