@@ -6,7 +6,9 @@ const { Province, City, District } = require('../models/index')
 
 const getProvince = async (req, res) => {
     try {
-        let province = await Province.findAll()
+        let province = await Province.findAll({
+            attributes: [['id', 'key'], ['prov_name', 'value']]
+        })
         return res.status(200).json({
             data: province
         })
