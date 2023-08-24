@@ -55,7 +55,7 @@ const updatePersonal = async (req, res) => {
 const uploadImage = async (req, res) => {
     try {
         const fileCount = Object.keys(req.files).length;
-        if (fileCount != 2) {
+        if (fileCount != 3) {
             if (req.files) {
                 Object.values(req.files).forEach(files => {
                     files.forEach(file => {
@@ -63,7 +63,7 @@ const uploadImage = async (req, res) => {
                     });
                 });
             }
-            return res.status(400).json({ message: 'Id card or selfie image not found' })
+            return res.status(400).json({ message: 'Id card, selfie or bpkb image not found' })
         }
 
         let customer = await Customer.findOne({
@@ -87,6 +87,7 @@ const uploadImage = async (req, res) => {
 
         customer.selfie_image = req.files.selfie[0].filename
         customer.id_card_image = req.files.id_card[0].filename
+        customer.bpkb_image = req.files.bpkb[0].filename
         customer.status = 1
         customer.is_complete_document = 1
 

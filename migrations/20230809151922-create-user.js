@@ -66,6 +66,9 @@ module.exports = {
       selfie_image: {
         type: Sequelize.STRING
       },
+      bpkb_image: {
+        type: Sequelize.STRING
+      },
       avatar: {
         type: Sequelize.STRING
       },
@@ -79,10 +82,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       province: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       city: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
+      },
+      district: {
+        type: Sequelize.INTEGER
       },
       zipcode: {
         type: Sequelize.INTEGER

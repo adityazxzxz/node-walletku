@@ -7,7 +7,7 @@ const { verifyToken } = require('../middleware/jwt')
 const upload = require('../middleware/upload')
 const router = Router()
 
-router.post('/upload', verifyToken, upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }]), uploadImage)
+router.post('/upload', verifyToken, upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }, { name: 'bpkb', maxCount: 1 }]), uploadImage)
 router.post('/upload/ktp', verifyToken, upload.single('ktp'), uploadKtp)
 router.post('/upload/bpkb', verifyToken, upload.single('bpkb'), uploadBpkb)
 router.post('/upload/selfie', verifyToken, upload.single('selfie'), uploadSelfie)
