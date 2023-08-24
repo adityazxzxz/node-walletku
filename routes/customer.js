@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { uploadImage, updatePersonal } = require('../controllers/customer')
+const { uploadImage, updatePersonal, uploadKtp, uploadBpkb, uploadSelfie } = require('../controllers/customer')
 const {
     personalData: personalDataValidator,
     validate } = require('../middleware/validator')
@@ -8,6 +8,9 @@ const upload = require('../middleware/upload')
 const router = Router()
 
 router.post('/upload', verifyToken, upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }]), uploadImage)
+router.post('/upload/ktp', verifyToken, upload.single('ktp'), uploadKtp)
+router.post('/upload/bpkb', verifyToken, upload.single('bpkb'), uploadBpkb)
+router.post('/upload/selfie', verifyToken, upload.single('selfie'), uploadSelfie)
 router.post('/personal_data', verifyToken, personalDataValidator(), validate, updatePersonal)
 
 module.exports = router

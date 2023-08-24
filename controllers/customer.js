@@ -4,6 +4,7 @@ const path = require('path')
 const fs = require('fs');
 const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
 const { Customer } = require('../models/index')
+const upload = require('../middleware/upload')
 
 const updatePersonal = async (req, res) => {
     try {
@@ -98,7 +99,103 @@ const uploadImage = async (req, res) => {
     }
 };
 
+const uploadKtp = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'image not provide' })
+        }
+        let customer = await Customer.findOne({
+            where: {
+                id: req.customer.id,
+                status: 1
+            }
+        })
+        if (!customer) {
+            if (req.file) {
+                fs.unlinkSync(req.file.path);
+            }
+            return res.status(401).json({
+                message: 'Customer already request'
+            })
+        }
+
+        customer.id_card_image = req.file.filename
+
+        await customer.save()
+
+        return res.status(200).json({ message: 'Upload KTP succeed' });
+    } catch (error) {
+        writeErrorLog('Upload Error', error)
+        return res.status(500).json({ message: 'Internal Error' });
+    }
+};
+
+const uploadBpkb = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'image not provide' })
+        }
+        let customer = await Customer.findOne({
+            where: {
+                id: req.customer.id,
+                status: 1
+            }
+        })
+        if (!customer) {
+            if (req.file) {
+                fs.unlinkSync(req.file.path);
+            }
+            return res.status(401).json({
+                message: 'Customer already request'
+            })
+        }
+
+        customer.id_card_image = req.file.filename
+
+        await customer.save()
+
+        return res.status(200).json({ message: 'Upload KTP succeed' });
+    } catch (error) {
+        writeErrorLog('Upload Error', error)
+        return res.status(500).json({ message: 'Internal Error' });
+    }
+};
+
+const uploadSelfie = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'image not provide' })
+        }
+        let customer = await Customer.findOne({
+            where: {
+                id: req.customer.id,
+                status: 1
+            }
+        })
+        if (!customer) {
+            if (req.file) {
+                fs.unlinkSync(req.file.path);
+            }
+            return res.status(401).json({
+                message: 'Customer already request'
+            })
+        }
+
+        customer.id_card_image = req.file.filename
+
+        await customer.save()
+
+        return res.status(200).json({ message: 'Upload KTP succeed' });
+    } catch (error) {
+        writeErrorLog('Upload Error', error)
+        return res.status(500).json({ message: 'Internal Error' });
+    }
+};
+
 module.exports = {
     uploadImage,
-    updatePersonal
+    updatePersonal,
+    uploadKtp,
+    uploadBpkb,
+    uploadSelfie
 }
