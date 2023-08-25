@@ -148,7 +148,7 @@ const checkKTP = async (req, res) => {
 
 const updatePersonal = async (req, res) => {
     try {
-        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone, pin, district, id_card } = req.body
+        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone, pin, district, sub_district, id_card } = req.body
         pin = await hashPassword(decrypt(pin))
         let cust = JSON.parse(JSON.stringify(await Customer.findOne({
             where: {
@@ -169,6 +169,7 @@ const updatePersonal = async (req, res) => {
             province,
             city,
             district,
+            sub_district,
             pin,
             zipcode,
             address,

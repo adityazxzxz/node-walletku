@@ -82,13 +82,16 @@ module.exports = {
         type: Sequelize.STRING
       },
       province: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       city: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       district: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
+      },
+      sub_district: {
+        type: Sequelize.STRING
       },
       zipcode: {
         type: Sequelize.INTEGER
