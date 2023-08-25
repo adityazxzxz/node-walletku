@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests/*.js --exit --timeout 5000",
+    "test": "node pretest.js && mocha tests/*.js --exit --timeout 5000",
     "dev": "node server.js",
     "build": "webpack",
     "prod": "node dist/final.js"

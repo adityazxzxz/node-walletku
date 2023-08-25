@@ -51,6 +51,7 @@ const phoneRegister = async (req, res) => {
         writeInfoLog('Sent OTP', `Sent to ${req.body.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + encrypt(otp_generate) : ''}`)
         return res.status(200).json({
             message: 'OTP code will send to your phone number',
+            ...(process.env.NODE_ENV !== 'production' ? { otp: encrypt(otp_generate) } : null)
         })
     } catch (error) {
         writeErrorLog('Phone Register Error :', error)
@@ -225,6 +226,7 @@ const register = async (req, res) => {
         writeInfoLog('Sent OTP', `Sent to ${req.body.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + encrypt(otp_generate) : ''}`)
         return res.status(200).json({
             message: 'OTP code will send to your phone number',
+            ...(process.env.NODE_ENV !== 'production' ? { otp: encrypt(otp_generate) } : null)
         })
     } catch (error) {
         writeErrorLog('Register Error :', error)

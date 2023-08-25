@@ -5,18 +5,51 @@ const util = require('util')
 
 chai.use(chaiHttp)
 chai.should()
-let response
+let response, user1, user2, user3
 
 describe("Auth", () => {
-    it("Register phone and password", (done) => {
+    it("Register phone and password akun pertama", (done) => {
         chai.request(app)
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398494',
+                phone: '6281283398497',
                 password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
             })
             .end((err, res) => {
+                user1 = res.body
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register phone and password akun kedua", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/phone_register')
+            .set({})
+            .send({
+                phone: '6281283398495',
+                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
+            })
+            .end((err, res) => {
+                user2 = res.body
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register phone and password akun ketiga", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/phone_register')
+            .set({})
+            .send({
+                phone: '6281283398496',
+                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
+            })
+            .end((err, res) => {
+                user3 = res.body
                 response = res
                 res.should.have.status(200)
                 done()
@@ -56,6 +89,39 @@ describe("Auth", () => {
                 done()
             })
     })
+
+    it("Input OTP Register user 1", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/otp/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "6281283398497",
+                "otp": user1.otp
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Input Wrong OTP", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/otp/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "6281283398494",
+                "otp": 'U2FsdGVkX1+OgJuxc1XFKi3ADTlQMirrP4VDazrWpcc='
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(404)
+                done()
+            })
+    })
+
+
+
 
     afterEach(function () {
         if (this.currentTest.state == 'failed') {
