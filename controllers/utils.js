@@ -7,7 +7,7 @@ const jabodetabek = require('../assets/jabodetabek.json')
 
 const getProvince = async (req, res) => {
     try {
-        const whitelist_province = [31, 36];
+        const whitelist_province = [31, 32, 36,];
         let province = await Province.findAll({
             attributes: [['province_code', 'key'], ['province_name', 'value']],
             where: {
