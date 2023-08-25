@@ -24,7 +24,7 @@ const getPostal = async (req, res) => {
     try {
         const { province_code } = req.params
         let postal = await Postal.findAll({
-            attributes: [['id', 'key'], [sequelize.literal(`CONCAT(city, '-', urban, '-', sub_district ,'-',postal_code)`), 'value']],
+            // attributes: [['id', 'key'], [sequelize.literal(`CONCAT(city, '-', urban, '-', sub_district ,'-',postal_code)`), 'value']],
             where: {
                 province_code
             }
