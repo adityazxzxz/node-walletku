@@ -14,7 +14,7 @@ router.post('/upload/bpkb', verifyToken, upload.single('bpkb'), uploadBpkb)
 router.post('/upload/selfie', verifyToken, upload.single('selfie'), uploadSelfie)
 router.post('/personal_data', verifyToken, personalDataValidator(), validate, updatePersonal)
 router.post('/check_ktp', verifyToken, ktpValidator(), validate, checkKTP)
-router.post('/profile', verifyToken, getProfile)
+router.get('/profile', verifyToken, getProfile)
 router.put('/password', verifyToken, changePassword)
 router.put('/pin', verifyToken, changePin)
 
