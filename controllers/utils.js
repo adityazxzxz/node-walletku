@@ -2,12 +2,17 @@ const { writeInfoLog, writeErrorLog } = require('../helpers/logger')
 const path = require('path')
 const fs = require('fs');
 const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
-const { Province, City, District, Postal, sequelize } = require('../models/index');
+const { Province, City, District, Postal, sequelize, Sequelize } = require('../models/index');
+const jabodetabek = require('../assets/jabodetabek.json')
 
 const getProvince = async (req, res) => {
     try {
+        const whitelist_province = [31, 36];
         let province = await Province.findAll({
-            attributes: [['province_code', 'key'], ['province_name', 'value']]
+            attributes: [['province_code', 'key'], ['province_name', 'value']],
+            where: {
+                [Sequelize.Op.in]: whitelist_province
+            }
         })
         return res.status(200).json({
             data: province
@@ -80,9 +85,22 @@ const getDistrict = async (req, res) => {
     }
 }
 
+const getJabodetabek = async (req, res) => {
+    try {
+        return res.status(200).json({
+            data: jabodetabek
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 module.exports = {
     getProvince,
     getCity,
     getDistrict,
-    getPostal
+    getPostal,
+    getJabodetabek
 }
