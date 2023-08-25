@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { uploadImage, updatePersonal, uploadKtp, uploadBpkb, uploadSelfie, checkKTP } = require('../controllers/customer')
+const { uploadImage, updatePersonal, uploadKtp, uploadBpkb, uploadSelfie, checkKTP, getProfile, changePassword, changePin } = require('../controllers/customer')
 const {
     personalData: personalDataValidator,
     ktpValidator,
@@ -13,6 +13,10 @@ router.post('/upload/ktp', verifyToken, upload.single('ktp'), uploadKtp)
 router.post('/upload/bpkb', verifyToken, upload.single('bpkb'), uploadBpkb)
 router.post('/upload/selfie', verifyToken, upload.single('selfie'), uploadSelfie)
 router.post('/personal_data', verifyToken, personalDataValidator(), validate, updatePersonal)
-router.post('/check_ktp', ktpValidator(), validate, checkKTP)
+router.post('/check_ktp', verifyToken, ktpValidator(), validate, checkKTP)
+router.post('/profile', verifyToken, getProfile)
+router.put('/password', verifyToken, changePassword)
+router.put('/pin', verifyToken, changePin)
+
 
 module.exports = router

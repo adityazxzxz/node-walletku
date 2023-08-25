@@ -6,6 +6,122 @@ const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/e
 const { Customer } = require('../models/index')
 const upload = require('../middleware/upload')
 
+const changePin = async (req, res) => {
+    try {
+        let { old_pin, new_pin } = req.body
+
+        let cust = JSON.parse(JSON.stringify(await Customer.findOne({
+            where: {
+                id: req.customer.id
+            }
+        })))
+
+        if (!cust) {
+            return res.status(404).json({
+                message: 'User not found'
+            })
+        }
+
+        const checkPin = await verifyPassword(cust.pin, decrypt(old_pin))
+        if (!checkPin) {
+            return res.status(401).json({
+                message: 'old PIN invalid'
+            })
+        }
+
+        let data_pin = await hashPassword(new_pin)
+
+        await Customer.update({
+            pin: data_pin
+        })
+
+        return res.status(200).json({
+            message: 'PIN has been updated'
+        })
+
+    } catch (error) {
+        writeErrorLog('Change PIN', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
+const changePassword = async (req, res) => {
+    try {
+        let { old_password, new_password } = req.body
+
+        let cust = JSON.parse(JSON.stringify(await Customer.findOne({
+            where: {
+                id: req.customer.id
+            }
+        })))
+
+        if (!cust) {
+            return res.status(404).json({
+                message: 'User not found'
+            })
+        }
+
+        const checkPassword = await verifyPassword(cust.password, decrypt(old_password))
+        if (!checkPassword) {
+            return res.status(401).json({
+                message: 'old password invalid'
+            })
+        }
+
+        let data_password = await hashPassword(new_password)
+
+        await Customer.update({
+            password: data_password
+        })
+
+        return res.status(200).json({
+            message: 'Password has been updated'
+        })
+
+    } catch (error) {
+        writeErrorLog('Change password', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
+const getProfile = async (req, res) => {
+    try {
+        let cust = JSON.parse(JSON.stringify(await Customer.findOne({
+            attributes: [
+                'fullname',
+                'email',
+                'birthdate',
+                'avatar',
+                'address',
+                'province',
+                'city',
+                'district',
+                'address',
+                'zipcode',
+                'plat_no'
+            ],
+            where: {
+                id: req.customer.id
+            }
+        })))
+
+        if (!cust) {
+            return res.status(404).json({
+                message: 'User not found'
+            })
+        }
+    } catch (error) {
+        writeErrorLog('Get profile', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 const checkKTP = async (req, res) => {
     try {
         let cust = await Customer.findOne({
@@ -225,5 +341,8 @@ module.exports = {
     uploadKtp,
     uploadBpkb,
     uploadSelfie,
-    checkKTP
+    checkKTP,
+    changePin,
+    changePassword,
+    getProfile
 }

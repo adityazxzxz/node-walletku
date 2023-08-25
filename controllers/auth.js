@@ -158,7 +158,8 @@ const login = async (req, res) => {
             id: cust.id,
             phone: cust.phone,
             fullname: cust.fullname,
-            status: cust.status
+            status: cust.status,
+            is_complete_document: cust.is_complete_document,
         })
 
         const { exp, accessToken, refreshToken } = await signToken(encrypt(payload))
