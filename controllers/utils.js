@@ -11,7 +11,9 @@ const getProvince = async (req, res) => {
         let province = await Province.findAll({
             attributes: [['province_code', 'key'], ['province_name', 'value']],
             where: {
-                [Sequelize.Op.in]: whitelist_province
+                province_code: {
+                    [Sequelize.Op.in]: whitelist_province
+                }
             }
         })
         return res.status(200).json({
@@ -19,6 +21,7 @@ const getProvince = async (req, res) => {
         })
     } catch (error) {
         writeErrorLog('Province', error)
+        console.log(error)
         return res.status(500).json({
             message: 'Internal Error'
         })
