@@ -114,6 +114,10 @@ const getProfile = async (req, res) => {
                 message: 'User not found'
             })
         }
+
+        return res.status(200).json({
+            data: cust
+        })
     } catch (error) {
         writeErrorLog('Get profile', error)
         return res.status(500).json({
