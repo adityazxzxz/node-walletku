@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false,
         sequelize,
         modelName: 'Postal',
-        tableName: 'Postals'
+        tableName: 'postals'
     });
     return Postal;
 };
