@@ -43,8 +43,8 @@ const register = () => {
                 throw new Error('must be 6 digits')
         }),
         body('password').custom(async value => {
-            if (value.length < 1 || decrypt(value).length < 6)
-                throw new Error('Password must be more than 6 digits')
+            if (typeof value == 'undefined' || value.length < 1 || decrypt(value).length < 6)
+                throw new Error('must be more than 6 digits')
         }),
         body('fullname').isLength({ min: 1 }).withMessage(' is empty'),
         body('id_card').isLength({ min: 16 }).withMessage('must min 16 digits'),
@@ -55,8 +55,8 @@ const register = () => {
 const otp = () => {
     return [
         body('otp').custom(async value => {
-            if (decrypt(value).length < 6)
-                throw new Error('OTP must be 6 digits')
+            if (typeof value == 'undefined' || decrypt(value).length < 6)
+                throw new Error('must be 6 digits')
         }),
     ]
 }
@@ -67,9 +67,9 @@ const login = () => {
         body('phone').isNumeric().withMessage('Must be a number'),
         body('password').custom(async value => {
             if (typeof value == 'undefined' || value.length < 1 || decrypt(value).length < 1)
-                throw new Error('Password not be empty')
+                throw new Error('not be empty')
             if (decrypt(value).length < 8)
-                throw new Error('Password must be min 8 char')
+                throw new Error('must be min 8 char')
         }),
     ]
 }
