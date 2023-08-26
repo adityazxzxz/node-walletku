@@ -28,7 +28,8 @@ const phoneRegister = async (req, res) => {
                 })
                 writeInfoLog('Sent OTP', `Sent to ${phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + encrypt(otp_generate) : ''}`)
                 return res.status(200).json({
-                    message: 'Otp Sent'
+                    message: 'Otp Sent',
+                    ...(process.env.NODE_ENV !== 'production' ? { otp: encrypt(otp_generate) } : null)
                 })
             } else if (cust.status >= 1) {
                 return res.status(409).json({
@@ -202,7 +203,8 @@ const register = async (req, res) => {
                 let { otp_generate, otp_encrypted } = await sendOtp(cust)
                 writeInfoLog('Sent OTP', `Sent to ${cust.phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + otp_encrypted : ''}`)
                 return res.status(200).json({
-                    message: 'Otp Sent'
+                    message: 'Otp Sent',
+                    ...(process.env.NODE_ENV !== 'production' ? { otp: encrypt(otp_generate) } : null)
                 })
             }
 

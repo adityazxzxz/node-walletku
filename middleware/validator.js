@@ -5,8 +5,10 @@ const { decrypt } = require('../helpers/encrypt')
 const phoneRegister = () => {
     return [
         body('password').custom(async value => {
-            if (value.length < 1 || decrypt(value).length < 8)
-                throw new Error('Password must be more than 8 digits')
+            if (typeof value == 'undefined' || value.length < 1 || decrypt(value).length < 1)
+                throw new Error('not be empty')
+            if (decrypt(value).length < 8)
+                throw new Error('must be min 8 char')
         }),
         body('phone').isLength({ min: 11 }).withMessage('must min 11 digits')
     ]
@@ -83,7 +85,6 @@ const validate = (req, res, next) => {
     if (errors.isEmpty()) {
         return next()
     }
-
     const extractedError = []
     errors.array().map(err => {
         extractedError.push(`${err.path} ${err.msg.toLowerCase()}`)
