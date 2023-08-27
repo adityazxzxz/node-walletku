@@ -101,6 +101,21 @@ describe("Customer", () => {
             })
     })
 
+    it("Update profile", (done) => {
+        chai.request(app)
+            .put('/api/v1/customer/profile')
+            .send({
+                fullname: 'Aditya Metrometro',
+                emergency_name: 'Batman',
+                emergency_call: 14045
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
     afterEach(function () {
         if (this.currentTest.state == 'failed') {
             console.log("    Response body: " + util.inspect(response.body, { depth: null, colors: true }) + "\n");

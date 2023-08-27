@@ -134,7 +134,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/otp/register')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398494",
+                "phone": "6281283398495",
                 "otp": 'U2FsdGVkX1+OgJuxc1XFKi3ADTlQMirrP4VDazrWpcc='
             })
             .end((err, res) => {
