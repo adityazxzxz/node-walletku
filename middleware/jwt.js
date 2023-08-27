@@ -25,7 +25,7 @@ const signToken = async (customer) => {
             id: customer.id,
             phone: customer.phone,
             status: customer.status,
-            fullname: customer.status,
+            fullname: customer.fullname,
             is_complete_document: customer.is_complete_document,
             is_complete_profile: customer.is_complete_profile
         })
