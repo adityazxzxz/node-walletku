@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { writeErrorLog } = require('../helpers/logger')
-const { decrypt } = require('../helpers/encrypt')
+const { decrypt, encrypt } = require('../helpers/encrypt')
 const jwtKey = process.env.JWT_KEY || 'secretKey'
 
 const verifyToken = async (req, res, next) => {
@@ -19,12 +19,21 @@ const verifyToken = async (req, res, next) => {
     }
 }
 
-const signToken = async (payload) => {
+const signToken = async (customer) => {
     try {
+        const payload = JSON.stringify({
+            id: customer.id,
+            phone: customer.phone,
+            status: customer.status,
+            fullname: customer.status,
+            is_complete_document: customer.is_complete_document,
+            is_complete_profile: customer.is_complete_profile
+        })
+
         const minutes = 5 // in minutes
         const expiresIn = Math.floor(Date.now() / 1000) + (60 * minutes)
-        const accessToken = jwt.sign({ data: payload }, jwtKey, { expiresIn });
-        const refreshToken = jwt.sign({ data: payload }, jwtKey);
+        const accessToken = jwt.sign({ data: encrypt(payload) }, jwtKey, { expiresIn });
+        const refreshToken = jwt.sign({ data: encrypt(payload) }, jwtKey);
         return { exp: expiresIn, accessToken, refreshToken }
     } catch (error) {
         return error

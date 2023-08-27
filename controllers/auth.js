@@ -107,11 +107,14 @@ const otpRegister = async (req, res) => {
             })
         }
 
-        const payload = JSON.stringify({
-            id: cust.id,
-            phone: cust.phone,
-            status: cust.status
-        })
+        // const payload = JSON.stringify({
+        //     id: cust.id,
+        //     phone: cust.phone,
+        //     status: cust.status,
+        //     fullname: cust.status,
+        //     is_complete_document,
+        //     is_complete_profile
+        // })
 
         await Customer.update({
             otp: null,
@@ -122,7 +125,7 @@ const otpRegister = async (req, res) => {
             }
         })
 
-        const { exp, accessToken, refreshToken } = await signToken(encrypt(payload))
+        const { exp, accessToken, refreshToken } = await signToken(cust)
         return res.status(200).json({
             exp,
             accessToken,
@@ -156,15 +159,8 @@ const login = async (req, res) => {
                 message: 'password invalid'
             })
         }
-        const payload = JSON.stringify({
-            id: cust.id,
-            phone: cust.phone,
-            fullname: cust.fullname,
-            status: cust.status,
-            is_complete_document: cust.is_complete_document,
-        })
 
-        const { exp, accessToken, refreshToken } = await signToken(encrypt(payload))
+        const { exp, accessToken, refreshToken } = await signToken(cust)
         return res.status(200).json({
             exp,
             accessToken,
