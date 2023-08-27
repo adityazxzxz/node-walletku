@@ -58,6 +58,10 @@ const otp = () => {
             if (typeof value == 'undefined' || decrypt(value).length < 6)
                 throw new Error('must be 6 digits')
         }),
+        body('phone').custom(async value => {
+            if (typeof value == 'undefined' || value.length < 11)
+                throw new Error('must be 15 digits')
+        }),
     ]
 }
 

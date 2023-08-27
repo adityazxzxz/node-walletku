@@ -107,15 +107,6 @@ const otpRegister = async (req, res) => {
             })
         }
 
-        // const payload = JSON.stringify({
-        //     id: cust.id,
-        //     phone: cust.phone,
-        //     status: cust.status,
-        //     fullname: cust.status,
-        //     is_complete_document,
-        //     is_complete_profile
-        // })
-
         await Customer.update({
             otp: null,
             otp_exp: null

@@ -22,55 +22,6 @@ describe("Auth", () => {
                 done()
             })
     })
-    it("Register phone and password akun pertama", (done) => {
-        chai.request(app)
-            .post('/api/v1/auth/phone_register')
-            .set({})
-            .send({
-                phone: '6281283398497',
-                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
-            })
-            .end((err, res) => {
-                otp1 = res.body.otp
-                response = res
-                res.should.have.status(200)
-                done()
-            })
-    })
-
-    it("Register phone and password akun kedua", (done) => {
-        chai.request(app)
-            .post('/api/v1/auth/phone_register')
-            .set({})
-            .send({
-                phone: '6281283398495',
-                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
-            })
-            .end((err, res) => {
-                otp2 = res.body.otp
-                response = res
-                res.should.have.status(200)
-                done()
-            })
-    })
-
-    it("Register phone and password akun ketiga", (done) => {
-        chai.request(app)
-            .post('/api/v1/auth/phone_register')
-            .set({})
-            .send({
-                phone: '6281283398496',
-                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
-            })
-            .end((err, res) => {
-                otp3 = res.body.otp
-                response = res
-                res.should.have.status(200)
-                done()
-            })
-    })
-
-
 
     it("Register empty phone", (done) => {
         chai.request(app)
@@ -130,6 +81,53 @@ describe("Auth", () => {
             })
     })
 
+    it("Register phone and password akun 1", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/phone_register')
+            .set({})
+            .send({
+                phone: '6281283398495',
+                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
+            })
+            .end((err, res) => {
+                otp1 = res.body.otp
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register phone and password akun 2", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/phone_register')
+            .set({})
+            .send({
+                phone: '6281283398496',
+                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
+            })
+            .end((err, res) => {
+                otp2 = res.body.otp
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register phone and password akun 3", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/phone_register')
+            .set({})
+            .send({
+                phone: '6281283398497',
+                password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
+            })
+            .end((err, res) => {
+                otp3 = res.body.otp
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
 
     it("Input Wrong OTP", (done) => {
         chai.request(app)
@@ -146,13 +144,40 @@ describe("Auth", () => {
             })
     })
 
+    it("Input OTP without phone", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/otp/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "otp": 'U2FsdGVkX1+OgJuxc1XFKi3ADTlQMirrP4VDazrWpcc='
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(400)
+                done()
+            })
+    })
+
+    it("Input OTP only phone number", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/otp/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "6281283398495",
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(400)
+                done()
+            })
+    })
 
     it("Input OTP Register user 1", (done) => {
         chai.request(app)
             .post('/api/v1/auth/otp/register')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398497",
+                "phone": "6281283398495",
                 "otp": otp1
             })
             .end((err, res) => {
@@ -163,7 +188,39 @@ describe("Auth", () => {
             })
     })
 
-    it("Register Personal Data", (done) => {
+    it("Input OTP Register user 2", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/otp/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "6281283398496",
+                "otp": otp2
+            })
+            .end((err, res) => {
+                response = res
+                user2 = res.body
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Input OTP Register user 3", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/otp/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "6281283398497",
+                "otp": otp3
+            })
+            .end((err, res) => {
+                response = res
+                user3 = res.body
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register Personal Data user 1", (done) => {
         chai.request(app)
             .post('/api/v1/customer/personal_data')
             .set({ Authorization: 'Bearer ' + user1.accessToken })
@@ -185,6 +242,32 @@ describe("Auth", () => {
             .end((err, res) => {
                 response = res
                 res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register Personal Data with ktp existing", (done) => {
+        chai.request(app)
+            .post('/api/v1/customer/personal_data')
+            .set({ Authorization: 'Bearer ' + user2.accessToken })
+            .send({
+                "fullname": "mrzxzxz",
+                "email": "mrzxzxz@gmail.com",
+                "id_card": "123456789",
+                "plat_no": "123123",
+                "province": "Banten",
+                "city": "Tangerang",
+                "district": "Kelapadua",
+                "sub_district": "Bencongan",
+                "zipcode": "123",
+                "pin": "U2FsdGVkX19pqLEMcxWA0lW/7Qq/p09dkgWnRfbB5VU=",
+                "address": "harkit",
+                "emergency_name": "AAwer",
+                "emergency_phone": "123123"
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(401)
                 done()
             })
     })
@@ -235,7 +318,7 @@ describe("Auth", () => {
             })
             .end((err, res) => {
                 response = res
-                res.should.have.status(404)
+                res.should.have.status(401)
                 done()
             })
     })
@@ -245,7 +328,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398497',
+                phone: '6281283398495',
                 password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
             })
             .end((err, res) => {

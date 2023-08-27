@@ -152,7 +152,34 @@ const checkKTP = async (req, res) => {
 
 const updatePersonal = async (req, res) => {
     try {
-        let { fullname, email, plat_no, province, city, zipcode, address, emergency_name, emergency_phone, pin, district, sub_district, id_card } = req.body
+        let {
+            fullname,
+            email,
+            plat_no,
+            province,
+            city,
+            zipcode,
+            address,
+            emergency_name,
+            emergency_phone,
+            pin,
+            district,
+            sub_district,
+            id_card
+        } = req.body
+
+        let checkIDCard = await Customer.findOne({
+            where: {
+                id_card
+            }
+        })
+
+        if (checkIDCard) {
+            return res.status(401).json({
+                message: 'KTP already registered'
+            })
+        }
+
         pin = await hashPassword(decrypt(pin))
         let cust = JSON.parse(JSON.stringify(await Customer.findOne({
             where: {
