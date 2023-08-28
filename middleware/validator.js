@@ -16,16 +16,16 @@ const phoneRegister = () => {
 
 const personalData = () => {
     return [
-        body('fullname').isLength({ min: 1 }),
-        body('id_card').isLength({ min: 1 }),
-        body('email').isLength({ min: 1 }),
-        body('plat_no').isLength({ min: 1 }),
-        body('province').isLength({ min: 1 }),
-        body('city').isLength({ min: 1 }),
-        body('zipcode').isLength({ min: 1 }),
-        body('address').isLength({ min: 1 }),
-        body('emergency_name').isLength({ min: 1 }),
-        body('emergency_phone').isLength({ min: 1 })
+        body('fullname').notEmpty().withMessage('not be empty'),
+        body('id_card').notEmpty().withMessage('not be empty').isNumeric().withMessage('must be numeric'),
+        body('email').notEmpty().withMessage('not be empty'),
+        body('plat_no').notEmpty().withMessage('not be empty'),
+        body('province').notEmpty().withMessage('not be empty'),
+        body('city').notEmpty().withMessage('not be empty'),
+        body('zipcode').notEmpty().withMessage('not be empty'),
+        body('address').notEmpty().withMessage('not be empty'),
+        body('emergency_name').notEmpty().withMessage('not be empty'),
+        body('emergency_phone').notEmpty().withMessage('not be empty').isNumeric().withMessage('must be numeric')
     ]
 }
 

@@ -272,6 +272,30 @@ describe("Auth", () => {
             })
     })
 
+    it("Register Personal not finish fill all required value", (done) => {
+        chai.request(app)
+            .post('/api/v1/customer/personal_data')
+            .set({ Authorization: 'Bearer ' + user2.accessToken })
+            .send({
+                "fullname": "mrzxzxz",
+                "email": "mrzxzxz@gmail.com",
+                "id_card": "123456789",
+                "plat_no": "123123",
+                "province": "Banten",
+                "city": "Tangerang",
+                "district": "Kelapadua",
+                "sub_district": "Bencongan",
+                "zipcode": "123",
+                "pin": "U2FsdGVkX19pqLEMcxWA0lW/7Qq/p09dkgWnRfbB5VU=",
+                "address": "harkit"
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(400)
+                done()
+            })
+    })
+
     it("Register Personal Data without token", (done) => {
         chai.request(app)
             .post('/api/v1/customer/personal_data')
