@@ -1,7 +1,4 @@
 require('dotenv').config()
-const sdk = require('api')('@verihubs/v1.0.0#26lwe1ollulfje8');
-
-
 const { writeInfoLog, writeErrorLog } = require('../helpers/logger')
 const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
 const { randomNumber } = require('../helpers/utils')
