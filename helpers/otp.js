@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { writeErrorLog } = require('./logger');
 
 // Inisialisasi instance Axios
 const API = axios.create({
@@ -24,6 +25,15 @@ API.interceptors.request.use(config => {
     config.headers['Api-Key'] = '50A8jTMjkenHtGbroYFetVvcyf+gewST'; // Ganti dengan header Anda
     return config;
 }, error => {
+    return Promise.reject(error);
+});
+
+API.interceptors.response.use(response => {
+    return response;
+}, error => {
+    if (error.response) {
+        writeErrorLog('OTP service', JSON.stringify(error.response.data))
+    }
     return Promise.reject(error);
 });
 

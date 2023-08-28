@@ -29,17 +29,12 @@ const phoneRegister = async (req, res) => {
                         id: cust.id
                     }
                 })
+
                 const { data, status } = await API.whatsapp({
                     msisdn: phone,
                     otp: otp_generate
                 })
 
-                if (status !== 201) {
-                    writeErrorLog('Otp error', data)
-                    return res.status(500).json({
-                        message: 'Send OTP problem'
-                    })
-                }
                 writeInfoLog('Sent OTP', `Sent to ${phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + encrypt(otp_generate) : ''}`)
                 return res.status(200).json({
                     message: 'Otp Sent',
@@ -60,13 +55,6 @@ const phoneRegister = async (req, res) => {
             otp: otp_generate
         })
 
-        if (status !== 201) {
-            writeErrorLog('Otp error', data)
-            return res.status(500).json({
-                message: 'Send OTP problem'
-            })
-        }
-
         await Customer.create({
             phone,
             password: dataPassword,
@@ -85,8 +73,7 @@ const phoneRegister = async (req, res) => {
     } catch (error) {
         writeErrorLog('Phone Register Error :', error)
         return res.status(500).json({
-            message: 'Internal Server Error',
-            errcode: '001'
+            message: 'Internal Server Error'
         })
     }
 }
