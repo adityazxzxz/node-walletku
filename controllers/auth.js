@@ -32,6 +32,17 @@ const phoneRegister = async (req, res) => {
                         id: cust.id
                     }
                 })
+                const { data, status } = await API.whatsapp({
+                    msisdn: phone,
+                    otp: otp_generate
+                })
+
+                if (status !== 201) {
+                    writeErrorLog('Otp error', data)
+                    return res.status(500).json({
+                        message: 'Send OTP problem'
+                    })
+                }
                 writeInfoLog('Sent OTP', `Sent to ${phone} ${process.env.NODE_ENV !== 'production' ? otp_generate + ' ' + encrypt(otp_generate) : ''}`)
                 return res.status(200).json({
                     message: 'Otp Sent',
@@ -55,7 +66,7 @@ const phoneRegister = async (req, res) => {
         if (status !== 201) {
             writeErrorLog('Otp error', data)
             return res.status(500).json({
-                message: 'Otp problem'
+                message: 'Send OTP problem'
             })
         }
 
