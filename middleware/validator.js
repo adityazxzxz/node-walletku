@@ -78,9 +78,20 @@ const login = () => {
     ]
 }
 
-const pin = () => {
+const changePassword = () => {
     return [
-        body('pin')
+        body('new_password').custom(async value => {
+            if (typeof value == 'undefined' || value.length < 1 || decrypt(value).length < 1)
+                throw new Error('not be empty')
+            if (decrypt(value).length < 8)
+                throw new Error('must be min 8 char')
+        }),
+        body('old_password').custom(async value => {
+            if (typeof value == 'undefined' || value.length < 1 || decrypt(value).length < 1)
+                throw new Error('not be empty')
+            if (decrypt(value).length < 8)
+                throw new Error('must be min 8 char')
+        })
     ]
 }
 
@@ -103,6 +114,7 @@ module.exports = {
     validate,
     register,
     phoneRegister,
+    changePassword,
     login,
     otp,
     personalData,

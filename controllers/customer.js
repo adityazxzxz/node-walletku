@@ -70,10 +70,14 @@ const changePassword = async (req, res) => {
             })
         }
 
-        let data_password = await hashPassword(new_password)
+        let data_password = await hashPassword(decrypt(new_password))
 
         await Customer.update({
             password: data_password
+        }, {
+            where: {
+                id: req.customer.id
+            }
         })
 
         return res.status(200).json({
@@ -87,6 +91,7 @@ const changePassword = async (req, res) => {
         })
     }
 }
+
 
 const getProfile = async (req, res) => {
     try {
@@ -220,6 +225,30 @@ const updatePersonal = async (req, res) => {
     } catch (error) {
         writeErrorLog('Personal Data', error)
         return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
+const updateProfile = async (req, res) => {
+    try {
+        const { avatar, fullname, emergency_name, emergency_phone } = req.body
+        const cust = await Customer.update({
+            fullname,
+            emergency_name,
+            emergency_phone
+        }, {
+            where: {
+                id: req.customer.id
+            }
+        })
+
+        return res.status(200).json({
+            message: 'Data has been updated'
+        })
+    } catch (error) {
+        writeErrorLog('Update profile', error)
+        return res.status(200).json({
             message: 'Internal Error'
         })
     }
@@ -376,5 +405,6 @@ module.exports = {
     checkKTP,
     changePin,
     changePassword,
-    getProfile
+    getProfile,
+    updateProfile
 }

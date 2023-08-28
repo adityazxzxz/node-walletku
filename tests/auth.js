@@ -339,23 +339,42 @@ describe("Auth", () => {
             })
     })
 
-    it("Get Profile", (done) => {
+    it("Login user 1 wrong password", (done) => {
         chai.request(app)
-            .get('/api/v1/customer/profile')
-            .set({ Authorization: 'Bearer ' + user1.accessToken })
+            .post('/api/v1/auth/login')
+            .send({
+                "phone": "6281283398495",
+                "password": "U2FsdGVkX19ZwrldPBDRvxT7isX5XblN8oX/+1zeKT4="
+            })
             .end((err, res) => {
                 response = res
-                res.should.have.status(200)
+                res.should.have.status(400)
                 done()
             })
     })
 
-    it("Get Profile without token", (done) => {
+    it("Login user 1 without password", (done) => {
         chai.request(app)
-            .get('/api/v1/customer/profile')
+            .post('/api/v1/auth/login')
+            .send({
+                "phone": "6281283398495"
+            })
             .end((err, res) => {
                 response = res
-                res.should.have.status(401)
+                res.should.have.status(400)
+                done()
+            })
+    })
+
+    it("Login with out phone number", (done) => {
+        chai.request(app)
+            .post('/api/v1/auth/login')
+            .send({
+                "password": "U2FsdGVkX19ZwrldPBDRvxT7isX5XblN8oX/+1zeKT4="
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(400)
                 done()
             })
     })
