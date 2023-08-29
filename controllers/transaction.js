@@ -1,5 +1,5 @@
 const { writeErrorLog } = require("../helpers/logger")
-const { sequelize, Sequelize } = require("../models")
+const { Customer, Merchant, sequelize, Transaction, Sequelize } = require("../models")
 
 const payment = async (req, res) => {
     try {
@@ -32,7 +32,7 @@ const payment = async (req, res) => {
             })
         }
 
-        const t = sequelize.transaction()
+        const t = await sequelize.transaction()
         try {
             await Customer.update({
                 balance: cust.balance - req.body.amount
@@ -51,6 +51,18 @@ const payment = async (req, res) => {
                 },
                 transaction: t
             })
+
+            await Transaction.create({
+                cust_id: cust.id,
+                merchant_id: merchant.id,
+                amount: req.body.amount,
+                action: 'PAYMENT',
+                status: 'success',
+                message: 'Payment success',
+            }, {
+                transaction: t
+            })
+
             await t.commit()
             return res.status(200).json({
                 message: 'Transaction Success'
@@ -65,7 +77,10 @@ const payment = async (req, res) => {
 
 
     } catch (error) {
-
+        writeErrorLog('Payment', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
     }
 }
 
