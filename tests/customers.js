@@ -16,7 +16,7 @@ describe("Customer", () => {
             .post('/api/v1/auth/login')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398495",
+                "phone": "081283398495",
                 "password": "U2FsdGVkX1+M5loCNfEuTYlhwzVDL8Pclx0pLtQ1FU4="
             })
             .end((err, res) => {
@@ -33,7 +33,7 @@ describe("Customer", () => {
             .post('/api/v1/auth/login')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398496",
+                "phone": "081283398496",
                 "password": "U2FsdGVkX1+M5loCNfEuTYlhwzVDL8Pclx0pLtQ1FU4="
             })
             .end((err, res) => {
@@ -49,7 +49,7 @@ describe("Customer", () => {
             .post('/api/v1/auth/login')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398497",
+                "phone": "081283398497",
                 "password": "U2FsdGVkX1+M5loCNfEuTYlhwzVDL8Pclx0pLtQ1FU4="
             })
             .end((err, res) => {
@@ -152,7 +152,7 @@ describe("Customer", () => {
         chai.request(app)
             .post('/api/v1/auth/login')
             .send({
-                "phone": "6281283398495",
+                "phone": "081283398495",
                 "password": "U2FsdGVkX1/kh2edrQ2YiTH/l/w3biz+362yKxQkEdY="
             })
             .end((err, res) => {

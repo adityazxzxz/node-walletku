@@ -13,7 +13,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398498',
+                phone: '081283398498',
                 password: 'U2FsdGVkX1/cBpMD9Xckco5oPT+7rx+zBoEPDLIXb8o='
             })
             .end((err, res) => {
@@ -57,7 +57,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398494',
+                phone: '081283398494',
                 password: ''
             })
             .end((err, res) => {
@@ -72,7 +72,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398494',
+                phone: '081283398494',
             })
             .end((err, res) => {
                 response = res
@@ -86,7 +86,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398495',
+                phone: '081283398495',
                 password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
             })
             .end((err, res) => {
@@ -102,7 +102,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398496',
+                phone: '081283398496',
                 password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
             })
             .end((err, res) => {
@@ -118,7 +118,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398497',
+                phone: '081283398497',
                 password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
             })
             .end((err, res) => {
@@ -134,7 +134,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/otp/register')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398495",
+                "phone": "081283398495",
                 "otp": 'U2FsdGVkX1+OgJuxc1XFKi3ADTlQMirrP4VDazrWpcc='
             })
             .end((err, res) => {
@@ -163,7 +163,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/otp/register')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398495",
+                "phone": "081283398495",
             })
             .end((err, res) => {
                 response = res
@@ -177,7 +177,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/otp/register')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398495",
+                "phone": "081283398495",
                 "otp": otp1
             })
             .end((err, res) => {
@@ -193,7 +193,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/otp/register')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398496",
+                "phone": "081283398496",
                 "otp": otp2
             })
             .end((err, res) => {
@@ -209,7 +209,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/otp/register')
             .set({ timestamp: `12341` })
             .send({
-                "phone": "6281283398497",
+                "phone": "081283398497",
                 "otp": otp3
             })
             .end((err, res) => {
@@ -352,7 +352,7 @@ describe("Auth", () => {
             .post('/api/v1/auth/phone_register')
             .set({})
             .send({
-                phone: '6281283398495',
+                phone: '081283398495',
                 password: 'U2FsdGVkX19LTIOlhZXI07bGxalyX5xYs4LTxJM5U7A='
             })
             .end((err, res) => {
@@ -367,7 +367,7 @@ describe("Auth", () => {
         chai.request(app)
             .post('/api/v1/auth/login')
             .send({
-                "phone": "6281283398495",
+                "phone": "081283398495",
                 "password": "U2FsdGVkX19ZwrldPBDRvxT7isX5XblN8oX/+1zeKT4="
             })
             .end((err, res) => {
@@ -381,7 +381,7 @@ describe("Auth", () => {
         chai.request(app)
             .post('/api/v1/auth/login')
             .send({
-                "phone": "6281283398495"
+                "phone": "081283398495"
             })
             .end((err, res) => {
                 response = res

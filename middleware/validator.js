@@ -10,7 +10,15 @@ const phoneRegister = () => {
             if (decrypt(value).length < 8)
                 throw new Error('must be min 8 char')
         }),
-        body('phone').isLength({ min: 11 }).withMessage('must min 11 digits')
+        body('phone').isLength({ min: 11 }).withMessage('must min 11 digits').isMobilePhone('id-ID')
+            .withMessage('invalid number format')
+            .custom(value => {
+                // Cek apakah nomor HP dimulai dengan '08'
+                if (!value.startsWith('08')) {
+                    throw new Error('invalid number format');
+                }
+                return true;
+            })
     ]
 }
 
@@ -48,7 +56,15 @@ const register = () => {
         }),
         body('fullname').isLength({ min: 1 }).withMessage(' is empty'),
         body('id_card').isLength({ min: 16 }).withMessage('must min 16 digits'),
-        body('phone').isLength({ min: 11 }).withMessage('must min 11 digits')
+        body('phone').isLength({ min: 11 }).withMessage('must min 11 digits').isMobilePhone('id-ID')
+            .withMessage('invalid number format')
+            .custom(value => {
+                // Cek apakah nomor HP dimulai dengan '08'
+                if (!value.startsWith('08')) {
+                    throw new Error('invalid number format');
+                }
+                return true;
+            })
     ]
 }
 
@@ -58,10 +74,15 @@ const otp = () => {
             if (typeof value == 'undefined' || decrypt(value).length < 6)
                 throw new Error('must be 6 digits')
         }),
-        body('phone').custom(async value => {
-            if (typeof value == 'undefined' || value.length < 11)
-                throw new Error('must be 15 digits')
-        }),
+        body('phone').isLength({ min: 11 }).withMessage('must min 11 digits').isMobilePhone('id-ID')
+            .withMessage('invalid number format')
+            .custom(value => {
+                // Cek apakah nomor HP dimulai dengan '08'
+                if (!value.startsWith('08')) {
+                    throw new Error('invalid number format');
+                }
+                return true;
+            })
     ]
 }
 

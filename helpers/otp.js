@@ -7,7 +7,7 @@ const API = axios.create({
 });
 
 const whatsapp = ({ msisdn, otp }) => API.post('/whatsapp/otp/send', {
-    "msisdn": msisdn,
+    "msisdn": '628' + msisdn.substring(2),
     "content": [
         "Ponjen"
     ],
