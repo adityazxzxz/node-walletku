@@ -29,6 +29,9 @@ module.exports = {
       merchant_code: {
         type: Sequelize.STRING
       },
+      qrcode: {
+        type: Sequelize.STRING, // P0000000010001
+      },
       balance: {
         type: Sequelize.INTEGER
       },

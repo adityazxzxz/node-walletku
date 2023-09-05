@@ -113,6 +113,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
+      balance: {
+        type: Sequelize.BIGINT(20).UNSIGNED,
+        defaultValue: 0
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

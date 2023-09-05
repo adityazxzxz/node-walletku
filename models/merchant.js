@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     bank_account_number: DataTypes.STRING,
     merchant_name: DataTypes.STRING,
     merchant_code: DataTypes.STRING,
+    qrcode: DataTypes.STRING,
     balance: DataTypes.INTEGER,
     status: DataTypes.INTEGER,
     last_login: DataTypes.DATE
@@ -29,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Merchant',
     updatedAt: 'updated_at',
     createdAt: 'created_at',
-    tableName: 'merchant'
+    tableName: 'merchants'
   });
   return Merchant;
 };
