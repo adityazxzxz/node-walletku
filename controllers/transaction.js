@@ -1,6 +1,55 @@
 const { writeErrorLog } = require("../helpers/logger")
 const { Customer, Merchant, sequelize, Transaction, Sequelize } = require("../models")
 
+const checkQR = async (req, res) => {
+    try {
+        let cust = JSON.parse(JSON.stringify(
+            await Customer.findOne({
+                where: {
+                    id: req.customer.id
+                }
+            })))
+        if (!cust) {
+            return res.status(404).json({
+                message: 'Customer not found'
+            })
+        }
+
+        let qrcode = req.body.qrcode // 'T00000012324'
+        let query
+        let qrtype
+
+        if (qrcode.substring(0, 1) === 'T') {
+            qrtype = 'dynamic'
+            query = await Transaction.findOne({
+                where: {
+                    qrcode
+                }
+            })
+        } else if (qrcode.substring(0, 1) === 'P') {
+            qrtype = 'static'
+            query = await Merchant.findOne({
+                where: {
+                    qrcode
+                }
+            })
+        } else {
+            return res.status(404).json({
+                message: 'Data not found'
+            })
+        }
+
+        query = JSON.parse(JSON.stringify(query))
+
+        return res.status(200).json({
+            message: 'QRinformation',
+        })
+
+    } catch (error) {
+
+    }
+}
+
 const payment = async (req, res) => {
     try {
         let cust = JSON.parse(JSON.stringify(
@@ -14,6 +63,11 @@ const payment = async (req, res) => {
                 message: 'Customer not found'
             })
         }
+
+        let qrcode = 'T00000012324'
+
+        // jika prefix T = dinamis jika P maka cek ke merchant
+
         let merchant = JSON.parse(JSON.stringify(await Merchant.findOne({
             where: {
                 merchant_code: req.body.merchant_code,
@@ -85,5 +139,6 @@ const payment = async (req, res) => {
 }
 
 module.exports = {
-    payment
+    payment,
+    checkQR
 }

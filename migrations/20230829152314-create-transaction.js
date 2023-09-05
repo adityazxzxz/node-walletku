@@ -14,6 +14,9 @@ module.exports = {
       merchant_id: {
         type: Sequelize.INTEGER
       },
+      qrcode: {
+        type: Sequelize.STRING, // T0000000010001
+      },
       amount: {
         type: Sequelize.INTEGER
       },
