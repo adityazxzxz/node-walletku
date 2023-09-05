@@ -1,5 +1,5 @@
 const { writeErrorLog } = require("../helpers/logger")
-const { Customer, Merchant, sequelize, Transaction, Sequelize } = require("../models")
+const { Customer, Merchant, sequelize, Transaction, Qrcode, Sequelize } = require("../models")
 
 const checkQR = async (req, res) => {
     try {
@@ -15,15 +15,20 @@ const checkQR = async (req, res) => {
             })
         }
 
-        let qrcode = req.body.qrcode // 'T00000012324'
+        let qrcode = req.body.code // 'T00000012324'
         let query
         let qrtype
 
         if (qrcode.substring(0, 1) === 'T') {
             qrtype = 'dynamic'
-            query = await Transaction.findOne({
+            query = await Qrcode.findOne({
+                include: [
+                    {
+                        model: Merchant
+                    }
+                ],
                 where: {
-                    qrcode
+                    code: qrcode
                 }
             })
         } else if (qrcode.substring(0, 1) === 'P') {
@@ -34,19 +39,37 @@ const checkQR = async (req, res) => {
                 }
             })
         } else {
+            return res.status(400).json({
+                message: 'Invalid Format Transaction'
+            })
+        }
+
+        query = JSON.parse(JSON.stringify(query))
+        if (!query) {
             return res.status(404).json({
                 message: 'Data not found'
             })
         }
 
-        query = JSON.parse(JSON.stringify(query))
-
         return res.status(200).json({
             message: 'QRinformation',
+            ...(qrtype == 'dynamic' ? {
+                code: query.code,
+                merchant_name: query.Merchant.merchant_name,
+                qrtype,
+                amount: query.amount,
+            } : {
+                code: query.qrcode,
+                merchant_name: query.merchant_name,
+                qrtype,
+            })
         })
 
     } catch (error) {
-
+        writeErrorLog('CheckQR', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
     }
 }
 
