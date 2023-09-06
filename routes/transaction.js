@@ -1,6 +1,7 @@
 const { Router } = require('express')
-const { payment } = require('../controllers/transaction')
+const { payment, QRScan } = require('../controllers/transaction')
 const {
+    checkqr,
     personalData: personalDataValidator,
     ktpValidator,
     changePassword: changePasswordValidator,
@@ -9,6 +10,7 @@ const { verifyToken } = require('../middleware/jwt')
 const router = Router()
 
 router.post('/payment', verifyToken, payment)
+router.post('/qrscan', checkqr(), validate, verifyToken, QRScan)
 
 
 

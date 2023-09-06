@@ -1,15 +1,15 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('transactions', {
+    await queryInterface.createTable('qrcodes', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      cust_id: {
-        type: Sequelize.INTEGER
+      code: {
+        type: Sequelize.STRING
       },
       merchant_id: {
         type: Sequelize.INTEGER
@@ -17,20 +17,11 @@ module.exports = {
       amount: {
         type: Sequelize.INTEGER
       },
-      action: {
-        type: Sequelize.STRING
+      status: {
+        type: Sequelize.BOOLEAN
       },
-      message: {
-        type: Sequelize.STRING
-      },
-      transaction_status: {
-        type: Sequelize.STRING
-      },
-      transaction_time: {
+      exp_time: {
         type: Sequelize.INTEGER
-      },
-      created_at: {
-        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -43,6 +34,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('transactions');
+    await queryInterface.dropTable('qrcodes');
   }
 };

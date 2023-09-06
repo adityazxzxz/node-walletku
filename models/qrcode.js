@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Transaction extends Model {
+  class Qrcode extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,21 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Merchant, { foreignKey: 'merchant_id' })
     }
   }
-  Transaction.init({
-    cust_id: DataTypes.INTEGER,
+  Qrcode.init({
+    code: DataTypes.STRING,
     merchant_id: DataTypes.INTEGER,
     amount: DataTypes.INTEGER,
-    action: DataTypes.STRING,
-    message: DataTypes.STRING,
-    transaction_status: DataTypes.STRING,
-    transaction_time: DataTypes.INTEGER,
-    created_at: DataTypes.DATE
+    status: DataTypes.BOOLEAN,
+    exp_time: DataTypes.INTEGER,
   }, {
     sequelize,
-    modelName: 'Transaction',
-    tableName: 'transactions'
+    modelName: 'Qrcode',
   });
-  return Transaction;
+  return Qrcode;
 };

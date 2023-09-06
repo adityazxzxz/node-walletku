@@ -116,6 +116,12 @@ const changePassword = () => {
     ]
 }
 
+const checkqr = () => {
+    return [
+        body('code').notEmpty().withMessage('not be empty')
+    ]
+}
+
 const validate = (req, res, next) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
@@ -139,5 +145,6 @@ module.exports = {
     login,
     otp,
     personalData,
-    ktpValidator
+    ktpValidator,
+    checkqr
 }
