@@ -123,7 +123,7 @@ const payment = async (req, res) => {
         }
 
 
-        if (cust.balance < amount + fee) {
+        if (cust.balance < (amount + fee)) {
             return res.status(409).json({
                 message: 'Your balance not enough to process transaction'
             })
