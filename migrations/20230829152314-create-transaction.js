@@ -14,19 +14,16 @@ module.exports = {
       merchant_id: {
         type: Sequelize.INTEGER
       },
-      qrcode: {
-        type: Sequelize.STRING, // T0000000010001
-      },
       amount: {
         type: Sequelize.INTEGER
       },
       action: {
         type: Sequelize.STRING
       },
-      status: {
-        type: Sequelize.TINYINT(1)
-      },
       message: {
+        type: Sequelize.STRING
+      },
+      transaction_status: {
         type: Sequelize.STRING
       },
       transaction_time: {

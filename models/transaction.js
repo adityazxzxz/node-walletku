@@ -16,11 +16,10 @@ module.exports = (sequelize, DataTypes) => {
   Transaction.init({
     cust_id: DataTypes.INTEGER,
     merchant_id: DataTypes.INTEGER,
-    qrcode: DataTypes.STRING, // T0000000010001
-    qrcode_exp: DataTypes.STRING,
     amount: DataTypes.INTEGER,
     action: DataTypes.STRING,
     message: DataTypes.STRING,
+    transaction_status: DataTypes.STRING,
     transaction_time: DataTypes.INTEGER,
     created_at: DataTypes.DATE
   }, {

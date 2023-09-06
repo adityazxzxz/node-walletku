@@ -1,7 +1,7 @@
 const { writeErrorLog } = require("../helpers/logger")
 const { Customer, Merchant, sequelize, Transaction, Qrcode, Sequelize } = require("../models")
 
-const checkQR = async (req, res) => {
+const QRScan = async (req, res) => {
     try {
         let cust = JSON.parse(JSON.stringify(
             await Customer.findOne({
@@ -24,11 +24,13 @@ const checkQR = async (req, res) => {
             query = await Qrcode.findOne({
                 include: [
                     {
-                        model: Merchant
+                        model: Merchant,
+                        required: true
                     }
                 ],
                 where: {
-                    code: qrcode
+                    code: qrcode,
+                    status: 'PENDING'
                 }
             })
         } else if (qrcode.substring(0, 1) === 'P') {
@@ -75,6 +77,7 @@ const checkQR = async (req, res) => {
 
 const payment = async (req, res) => {
     try {
+        let date = new Date()
         let cust = JSON.parse(JSON.stringify(
             await Customer.findOne({
                 where: {
@@ -87,21 +90,35 @@ const payment = async (req, res) => {
             })
         }
 
-        let qrcode = 'T00000012324'
+        let qrcode = req.body.code
+        let query
+        let qrtype
 
-        // jika prefix T = dinamis jika P maka cek ke merchant
-
-        let merchant = JSON.parse(JSON.stringify(await Merchant.findOne({
-            where: {
-                merchant_code: req.body.merchant_code,
-                status: 1
-            }
-        })))
-        if (!merchant) {
-            return res.status(404).json({
-                message: 'Merchant not found or not active'
+        if (qrcode.substring(0, 1) === 'T') {
+            qrtype = 'dynamic'
+            query = await Qrcode.findOne({
+                include: [
+                    {
+                        model: Merchant
+                    }
+                ],
+                where: {
+                    code: qrcode
+                }
+            })
+        } else if (qrcode.substring(0, 1) === 'P') {
+            qrtype = 'static'
+            query = await Merchant.findOne({
+                where: {
+                    qrcode
+                }
+            })
+        } else {
+            return res.status(400).json({
+                message: 'Invalid Format Transaction'
             })
         }
+
 
         if (cust.balance < req.body.amount) {
             return res.status(401).json({
@@ -109,10 +126,18 @@ const payment = async (req, res) => {
             })
         }
 
+        if (qrtype == 'dynamic') {
+            if (query.exp_time < Math.floor(date.getTime() / 1000)) {
+                return res.status(401).json({
+                    message: 'QR expired'
+                })
+            }
+        }
+
         const t = await sequelize.transaction()
         try {
             await Customer.update({
-                balance: cust.balance - req.body.amount
+                balance: cust.balance - (qrtype == 'static' ? req.body.amount : query.amount)
             }, {
                 where: {
                     id: req.customer.id
@@ -121,21 +146,33 @@ const payment = async (req, res) => {
             })
 
             await Merchant.update({
-                balance: merchant.balance + req.body.amount
+                balance: qrtype == 'static' ? sequelize.literal(`balance + ${req.body.amount}`) : sequelize.literal(`balance + ${query.amount}`)
             }, {
                 where: {
-                    merchant_code: req.body.merchant_code
+                    merchant_code: qrtype == 'static' ? query.merchant_code : query.Merchant.merchant_code
                 },
                 transaction: t
             })
 
+            if (qrtype == 'dynamic') {
+                await Qrcode.update({
+                    status: 'SETTLEMENT'
+                }, {
+                    where: {
+                        code: qrcode
+                    },
+                    transaction: t
+                })
+            }
+
             await Transaction.create({
                 cust_id: cust.id,
-                merchant_id: merchant.id,
+                merchant_id: qrtype == 'static' ? query.id : query.Merchant.id,
                 amount: req.body.amount,
                 action: 'PAYMENT',
                 status: 'success',
-                message: 'Payment success',
+                message: `Payment success QR ${qrtype}`,
+                transaction_time: Math.floor(date.getTime() / 1000)
             }, {
                 transaction: t
             })
@@ -163,5 +200,5 @@ const payment = async (req, res) => {
 
 module.exports = {
     payment,
-    checkQR
+    QRScan
 }
