@@ -144,7 +144,7 @@ const payment = async (req, res) => {
                 },
                 transaction: t
             })
-
+            console.log(req.boi)
             await Merchant.update({
                 balance: qrtype == 'static' ? sequelize.literal(`balance + ${req.body.amount}`) : sequelize.literal(`balance + ${query.amount}`)
             }, {
@@ -179,7 +179,12 @@ const payment = async (req, res) => {
 
             await t.commit()
             return res.status(200).json({
-                message: 'Transaction Success'
+                message: 'Transaction Success',
+                data: {
+                    id,
+                    amount,
+                    transaction_time,
+                }
             })
         } catch (error) {
             await t.rollback()
