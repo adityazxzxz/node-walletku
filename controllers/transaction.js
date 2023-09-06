@@ -1,5 +1,6 @@
 const { writeErrorLog } = require("../helpers/logger")
 const { Customer, Merchant, sequelize, Transaction, Qrcode, Sequelize } = require("../models")
+let fee = 3000
 
 const QRScan = async (req, res) => {
     try {
@@ -55,6 +56,7 @@ const QRScan = async (req, res) => {
 
         return res.status(200).json({
             message: 'QRinformation',
+            fee,
             ...(qrtype == 'dynamic' ? {
                 code: query.code,
                 merchant_name: query.Merchant.merchant_name,
@@ -120,7 +122,7 @@ const payment = async (req, res) => {
         }
 
 
-        if (cust.balance < req.body.amount) {
+        if (cust.balance < req.body.amount + fee) {
             return res.status(401).json({
                 message: 'Your balance not enough to process transaction'
             })
@@ -137,7 +139,7 @@ const payment = async (req, res) => {
         const t = await sequelize.transaction()
         try {
             await Customer.update({
-                balance: cust.balance - (qrtype == 'static' ? req.body.amount : query.amount)
+                balance: cust.balance - fee - (qrtype == 'static' ? req.body.amount : query.amount)
             }, {
                 where: {
                     id: req.customer.id
@@ -182,6 +184,7 @@ const payment = async (req, res) => {
                 message: 'Transaction Success',
                 data: {
                     amount: tx.amount,
+                    fee,
                     id: tx.id,
                     transaction_time: tx.transaction_time
                 }
