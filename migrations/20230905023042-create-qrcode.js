@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       exp_time: {
         type: Sequelize.INTEGER
