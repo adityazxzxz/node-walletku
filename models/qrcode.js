@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Qrcode',
+    tableName: 'qrcodes'
   });
   return Qrcode;
 };
