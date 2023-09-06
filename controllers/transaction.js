@@ -79,6 +79,7 @@ const QRScan = async (req, res) => {
 
 const payment = async (req, res) => {
     try {
+        let amount = parseInt(req.body.amount)
         let date = new Date()
         let cust = JSON.parse(JSON.stringify(
             await Customer.findOne({
@@ -122,15 +123,15 @@ const payment = async (req, res) => {
         }
 
 
-        if (cust.balance < req.body.amount + fee) {
-            return res.status(401).json({
+        if (cust.balance < amount + fee) {
+            return res.status(409).json({
                 message: 'Your balance not enough to process transaction'
             })
         }
 
         if (qrtype == 'dynamic') {
             if (query.exp_time < Math.floor(date.getTime() / 1000)) {
-                return res.status(401).json({
+                return res.status(409).json({
                     message: 'QR expired'
                 })
             }
