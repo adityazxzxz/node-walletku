@@ -180,7 +180,11 @@ const payment = async (req, res) => {
             await t.commit()
             return res.status(200).json({
                 message: 'Transaction Success',
-                tx
+                data: {
+                    amount: tx.amount,
+                    id: tx.id,
+                    transaction_time: tx.transaction_time
+                }
             })
         } catch (error) {
             await t.rollback()
