@@ -165,7 +165,7 @@ const payment = async (req, res) => {
                 })
             }
 
-            await Transaction.create({
+            let tx = await Transaction.create({
                 cust_id: cust.id,
                 merchant_id: qrtype == 'static' ? query.id : query.Merchant.id,
                 amount: req.body.amount,
@@ -180,11 +180,7 @@ const payment = async (req, res) => {
             await t.commit()
             return res.status(200).json({
                 message: 'Transaction Success',
-                data: {
-                    id,
-                    amount,
-                    transaction_time,
-                }
+                tx
             })
         } catch (error) {
             await t.rollback()
