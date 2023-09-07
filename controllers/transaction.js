@@ -147,7 +147,6 @@ const payment = async (req, res) => {
                 },
                 transaction: t
             })
-            console.log(req.boi)
             await Merchant.update({
                 balance: qrtype == 'static' ? sequelize.literal(`balance + ${req.body.amount}`) : sequelize.literal(`balance + ${query.amount}`)
             }, {
@@ -171,7 +170,7 @@ const payment = async (req, res) => {
             let tx = await Transaction.create({
                 cust_id: cust.id,
                 merchant_id: qrtype == 'static' ? query.id : query.Merchant.id,
-                amount: req.body.amount,
+                amount: qrtype == 'static' ? req.body.amount : query.amount,
                 action: 'PAYMENT',
                 status: 'success',
                 message: `Payment success QR ${qrtype}`,
@@ -181,6 +180,8 @@ const payment = async (req, res) => {
             })
 
             await t.commit()
+
+            console.log(tx)
             return res.status(200).json({
                 message: 'Transaction Success',
                 data: {
