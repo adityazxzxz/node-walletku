@@ -107,7 +107,8 @@ const getProfile = async (req, res) => {
                 'district',
                 'address',
                 'zipcode',
-                'plat_no'
+                'plat_no',
+                'balance'
             ],
             where: {
                 id: req.customer.id
