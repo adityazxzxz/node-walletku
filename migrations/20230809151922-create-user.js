@@ -117,6 +117,10 @@ module.exports = {
         type: Sequelize.BIGINT(20).UNSIGNED,
         defaultValue: 0
       },
+      limit: {
+        type: Sequelize.BIGINT(20).UNSIGNED,
+        defaultValue: 0
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

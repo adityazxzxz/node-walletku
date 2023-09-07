@@ -172,7 +172,8 @@ const payment = async (req, res) => {
                 merchant_id: qrtype == 'static' ? query.id : query.Merchant.id,
                 amount: qrtype == 'static' ? req.body.amount : query.amount,
                 action: 'PAYMENT',
-                status: 'success',
+                fee,
+                transaction_status: 'settlement',
                 message: `Payment success QR ${qrtype}`,
                 transaction_time: Math.floor(date.getTime() / 1000)
             }, {
@@ -208,7 +209,27 @@ const payment = async (req, res) => {
     }
 }
 
+const history = async (req, res) => {
+    try {
+        let history = await Transaction.findAll({
+            where: {
+                cust_id: req.customer.id
+            }
+        })
+
+        return res.status(200).json({
+            data: history
+        })
+    } catch (error) {
+        writeErrorLog('Transaction history', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 module.exports = {
     payment,
-    QRScan
+    QRScan,
+    history
 }

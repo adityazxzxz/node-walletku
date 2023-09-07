@@ -3,7 +3,7 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs');
 const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
-const { Customer } = require('../models/index')
+const { Customer, Transaction, Sequelize } = require('../models/index')
 const upload = require('../middleware/upload')
 
 const changePin = async (req, res) => {
@@ -126,6 +126,53 @@ const getProfile = async (req, res) => {
         })
     } catch (error) {
         writeErrorLog('Get profile', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
+const getLimit = async (req, res) => {
+    try {
+        let cust = JSON.parse(JSON.stringify(
+            await Customer.findOne({
+                where: {
+                    id: req.customer.id
+                }
+            })
+        ))
+
+        if (!cust) {
+            return res.status(404).json({
+                message: 'Customer not found'
+            })
+        }
+
+        let date = new Date()
+        let firstDayofMonth = new Date(date.getFullYear(), date.getMonth(), 1).getTime() / 1000
+        let lastDayofMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getTime() / 1000
+
+
+        let tx = JSON.parse(JSON.stringify(
+            await Transaction.findAll({
+                attributes: [
+                    [Sequelize.fn('SUM', Sequelize.col('amount')), 'total_amount'],
+                ],
+                where: {
+                    transaction_time: {
+                        [Sequelize.Op.between]: [firstDayofMonth, lastDayofMonth]
+                    }
+                }
+            })
+        ))
+        return res.status(200).json({
+            balance: cust.balance,
+            limit: cust.limit,
+            used_amount: parseInt(tx[0].total_amount)
+        })
+    } catch (error) {
+        console.log(error)
+        writeErrorLog('Get customer limit', error)
         return res.status(500).json({
             message: 'Internal Error'
         })
@@ -407,5 +454,6 @@ module.exports = {
     changePin,
     changePassword,
     getProfile,
-    updateProfile
+    updateProfile,
+    getLimit
 }

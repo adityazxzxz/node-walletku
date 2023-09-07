@@ -17,6 +17,9 @@ module.exports = {
       amount: {
         type: Sequelize.INTEGER
       },
+      fee: {
+        type: Sequelize.INTEGER
+      },
       action: {
         type: Sequelize.STRING
       },
@@ -28,9 +31,6 @@ module.exports = {
       },
       transaction_time: {
         type: Sequelize.INTEGER
-      },
-      created_at: {
-        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
