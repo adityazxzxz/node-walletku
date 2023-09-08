@@ -235,7 +235,8 @@ const history = async (req, res) => {
                     'amount',
                     'fee',
                     'action',
-                    'transaction_time'
+                    'transaction_time',
+                    'message'
                 ],
                 where: {
                     [Sequelize.Op.and]: [
