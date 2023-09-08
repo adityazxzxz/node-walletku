@@ -212,18 +212,13 @@ const history = async (req, res) => {
         let history = JSON.parse(JSON.stringify(await Transaction.findAll({
             attributes: [
                 [
-                    sequelize.fn(
-                        'FROM_UNIXTIME',
-                        sequelize.col('transaction_time'),
-                        '%Y-%m-%d'
-                    ),
-                    'transaction_date',
+                    sequelize.literal("DATE(createdAt)"), 'transaction_date'
                 ]
             ],
             where: {
                 cust_id: req.customer.id
             },
-            group: [sequelize.literal("DATE_FORMAT(createdAt, '%Y-%m-%d')"),],
+            group: [sequelize.literal("DATE(createdAt)")],
         })))
 
         let transactionHistory = history.map((t) => ({
