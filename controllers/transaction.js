@@ -174,15 +174,13 @@ const payment = async (req, res) => {
                 action: 'PAYMENT',
                 fee,
                 transaction_status: 'settlement',
-                message: `Payment success QR ${qrtype}`,
+                message: `Payment QR Success on ${qrtype == 'static' ? query.merchant_name : query.Merchant.merchant_name}`,
                 transaction_time: Math.floor(date.getTime() / 1000)
             }, {
                 transaction: t
             })
 
             await t.commit()
-
-            console.log(tx)
             return res.status(200).json({
                 message: 'Transaction Success',
                 data: {
@@ -211,14 +209,51 @@ const payment = async (req, res) => {
 
 const history = async (req, res) => {
     try {
-        let history = await Transaction.findAll({
+        let history = JSON.parse(JSON.stringify(await Transaction.findAll({
+            attributes: [
+                [
+                    sequelize.fn(
+                        'FROM_UNIXTIME',
+                        sequelize.col('transaction_time'),
+                        '%Y-%m-%d'
+                    ),
+                    'transaction_date'
+                ]
+            ],
             where: {
                 cust_id: req.customer.id
-            }
-        })
+            },
+            group: [sequelize.fn('date', sequelize.col('createdAt'))],
+        })))
+
+        let transactionHistory = history.map((t) => ({
+            Date: t.transaction_date,
+
+            Transactions: []
+        }))
+
+        for (const entry of transactionHistory) {
+            const date = entry.Date
+            const transactionsOnDate = await Transaction.findAll({
+                attributes: [
+                    'id',
+                    'amount',
+                    'fee',
+                    'action',
+                    'transaction_time'
+                ],
+                where: {
+                    [Sequelize.Op.and]: [
+                        sequelize.literal(`DATE_FORMAT(createdAt, '%Y-%m-%d') = '${date}'`),
+                        { cust_id: req.customer.id },
+                    ],
+                }
+            })
+            entry.Transactions = transactionsOnDate;
+        }
 
         return res.status(200).json({
-            data: history
+            data: transactionHistory
         })
     } catch (error) {
         writeErrorLog('Transaction history', error)
