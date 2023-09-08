@@ -218,15 +218,12 @@ const history = async (req, res) => {
                         '%Y-%m-%d'
                     ),
                     'transaction_date',
-                ],
-                [
-                    sequelize.fn('date', sequelize.col('createdAt')), 'createdAt'
                 ]
             ],
             where: {
                 cust_id: req.customer.id
             },
-            group: ['createdAt'],
+            group: [sequelize.literal("DATE_FORMAT(createdAt, '%Y-%m-%d')"),],
         })))
 
         let transactionHistory = history.map((t) => ({
