@@ -122,6 +122,13 @@ const checkqr = () => {
     ]
 }
 
+const payment = () => {
+    return [
+        body('code').notEmpty().withMessage('not be empty'),
+        body('amount').notEmpty().withMessage('not be empty').isNumeric().withMessage('must be numeric')
+    ]
+}
+
 const validate = (req, res, next) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
@@ -146,5 +153,6 @@ module.exports = {
     otp,
     personalData,
     ktpValidator,
-    checkqr
+    checkqr,
+    payment
 }

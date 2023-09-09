@@ -157,8 +157,10 @@ const getLimit = async (req, res) => {
             await Transaction.findAll({
                 attributes: [
                     [Sequelize.fn('SUM', Sequelize.col('amount')), 'total_amount'],
+                    [Sequelize.fn('SUM', Sequelize.col('fee')), 'total_fee'],
                 ],
                 where: {
+                    cust_id: req.customer.id,
                     transaction_time: {
                         [Sequelize.Op.between]: [firstDayofMonth, lastDayofMonth]
                     }
@@ -168,10 +170,9 @@ const getLimit = async (req, res) => {
         return res.status(200).json({
             balance: cust.balance,
             limit: cust.limit,
-            used_amount: parseInt(tx[0].total_amount)
+            used_amount: parseInt(tx[0].total_amount) + parseInt(tx[0].total_fee)
         })
     } catch (error) {
-        console.log(error)
         writeErrorLog('Get customer limit', error)
         return res.status(500).json({
             message: 'Internal Error'
@@ -339,7 +340,7 @@ const uploadImage = async (req, res) => {
         customer.selfie_image = req.files.selfie[0].filename
         customer.id_card_image = req.files.id_card[0].filename
         customer.bpkb_image = req.files.bpkb[0].filename
-        customer.status = 1
+        customer.status = 2
         customer.is_complete_document = 1
 
         await customer.save()

@@ -93,6 +93,12 @@ const payment = async (req, res) => {
             })
         }
 
+        if (cust.status !== 3) {
+            return res.status(409).json({
+                message: 'Customer not able to transaction'
+            })
+        }
+
         let qrcode = req.body.code
         let query
         let qrtype
@@ -126,6 +132,31 @@ const payment = async (req, res) => {
         if (cust.balance < (amount + fee)) {
             return res.status(409).json({
                 message: 'Your balance not enough to process transaction'
+            })
+        }
+
+        let firstDayofMonth = new Date(date.getFullYear(), date.getMonth(), 1).getTime() / 1000
+        let lastDayofMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getTime() / 1000
+        let cust_transaction = JSON.parse(JSON.stringify(
+            await Transaction.findAll({
+                attributes: [
+                    [Sequelize.fn('SUM', Sequelize.col('amount')), 'total_amount'],
+                    [Sequelize.fn('SUM', Sequelize.col('fee')), 'total_fee'],
+                ],
+                where: {
+                    cust_id: req.customer.id,
+                    transaction_time: {
+                        [Sequelize.Op.between]: [firstDayofMonth, lastDayofMonth]
+                    }
+                }
+            })
+        ))
+
+        if (cust.limit <= (parseInt(cust_transaction[0].total_amount) + parseInt(cust_transaction[0].total_fee))) {
+            return res.status(409).json({
+                message: 'Sorry, you already reached the limit',
+                limit: cust.limit,
+                used: (parseInt(cust_transaction[0].total_amount) + parseInt(cust_transaction[0].total_fee))
             })
         }
 
