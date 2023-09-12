@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     emergency_name: DataTypes.STRING,
     emergency_phone: DataTypes.STRING,
     plat_no: DataTypes.STRING,
+    stnk_name: DataTypes.STRING,
     balance: DataTypes.INTEGER,
     limit: DataTypes.INTEGER,
     is_complete_profile: DataTypes.BOOLEAN,

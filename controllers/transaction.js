@@ -1,6 +1,6 @@
 const { writeErrorLog } = require("../helpers/logger")
 const { Customer, Merchant, sequelize, Transaction, Qrcode, Sequelize } = require("../models")
-let fee = 3000
+let fee = 2000
 
 const QRScan = async (req, res) => {
     try {

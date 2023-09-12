@@ -219,20 +219,10 @@ const updatePersonal = async (req, res) => {
             pin,
             district,
             sub_district,
-            id_card
+            id_card,
+            stnk_name
         } = req.body
 
-        let checkIDCard = await Customer.findOne({
-            where: {
-                id_card
-            }
-        })
-
-        if (checkIDCard) {
-            return res.status(401).json({
-                message: 'KTP already registered'
-            })
-        }
 
         pin = await hashPassword(decrypt(pin))
         let cust = JSON.parse(JSON.stringify(await Customer.findOne({
@@ -246,11 +236,34 @@ const updatePersonal = async (req, res) => {
                 message: 'User not found or already save personal data'
             })
         }
+
+        let checkCustomer = JSON.parse(JSON.stringify(await Customer.findOne({
+            where: {
+                [Sequelize.Op.or]: [
+                    { id_card },
+                    { stnk_name }
+                ]
+            }
+        })))
+
+        if (checkCustomer) {
+            if (checkCustomer.id_card === id_card) {
+                return res.status(401).json({
+                    message: 'KTP already registered'
+                })
+            } else if (checkCustomer.stnk_name === stnk_name) {
+                return res.status(401).json({
+                    message: 'STNK name already registered'
+                })
+            }
+        }
+
         await Customer.update({
             fullname,
             id_card,
             email,
             plat_no,
+            stnk_name: stnk_name.toUpperCase().trim(),
             province,
             city,
             district,

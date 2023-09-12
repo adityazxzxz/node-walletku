@@ -28,6 +28,7 @@ const personalData = () => {
         body('id_card').notEmpty().withMessage('not be empty').isNumeric().withMessage('must be numeric'),
         body('email').notEmpty().withMessage('not be empty'),
         body('plat_no').notEmpty().withMessage('not be empty'),
+        body('stnk_name').notEmpty().withMessage('not be empty'),
         body('province').notEmpty().withMessage('not be empty'),
         body('city').notEmpty().withMessage('not be empty'),
         body('zipcode').notEmpty().withMessage('not be empty'),
@@ -55,6 +56,7 @@ const register = () => {
                 throw new Error('must be more than 6 digits')
         }),
         body('fullname').isLength({ min: 1 }).withMessage(' is empty'),
+        body('stnk_name').isLength({ min: 1 }).withMessage(' is empty'),
         body('id_card').isLength({ min: 16 }).withMessage('must min 16 digits'),
         body('phone').isLength({ min: 11 }).withMessage('must min 11 digits').isMobilePhone('id-ID')
             .withMessage('invalid number format')

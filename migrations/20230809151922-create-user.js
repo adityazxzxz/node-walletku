@@ -105,6 +105,9 @@ module.exports = {
       plat_no: {
         type: Sequelize.STRING
       },
+      stnk_name: {
+        type: Sequelize.STRING
+      },
       is_complete_profile: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
