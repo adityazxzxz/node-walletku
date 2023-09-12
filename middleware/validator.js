@@ -40,7 +40,13 @@ const personalData = () => {
 
 const ktpValidator = () => {
     return [
-        body('id_card').isLength({ min: 1 })
+        body('id_card').notEmpty().withMessage('not be empty').isNumeric().withMessage('must be numeric'),
+    ]
+}
+
+const stnkNameValidator = () => {
+    return [
+        body('stnk_name').notEmpty().withMessage('not be empty'),
     ]
 }
 
@@ -155,6 +161,7 @@ module.exports = {
     otp,
     personalData,
     ktpValidator,
+    stnkNameValidator,
     checkqr,
     payment
 }

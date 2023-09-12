@@ -204,6 +204,30 @@ const checkKTP = async (req, res) => {
     }
 }
 
+const checkSTNK = async (req, res) => {
+    try {
+        let cust = await Customer.findOne({
+            where: {
+                stnk_name: req.body.stnk_name.toUpperCase().trim()
+            }
+        })
+        if (cust) {
+            return res.status(401).json({
+                message: 'STNK name already exist'
+            })
+        } else {
+            return res.status(200).json({
+                message: 'STNK name available'
+            })
+        }
+    } catch (error) {
+        writeErrorLog('Check STNK', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 const updatePersonal = async (req, res) => {
     try {
         let {
@@ -465,6 +489,7 @@ module.exports = {
     uploadBpkb,
     uploadSelfie,
     checkKTP,
+    checkSTNK,
     changePin,
     changePassword,
     getProfile,
