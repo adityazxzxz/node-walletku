@@ -247,6 +247,11 @@ const updatePersonal = async (req, res) => {
             stnk_name
         } = req.body
 
+        if (stnk_name.toUpperCase().trim() !== fullname.toUpperCase().trim()) {
+            return res.status(409).json({
+                message: 'Fullname and STNK name not match'
+            })
+        }
 
         pin = await hashPassword(decrypt(pin))
         let cust = JSON.parse(JSON.stringify(await Customer.findOne({
@@ -283,7 +288,7 @@ const updatePersonal = async (req, res) => {
         }
 
         await Customer.update({
-            fullname,
+            fullname: fullname.toUpperCase().trim(),
             id_card,
             email,
             plat_no,
