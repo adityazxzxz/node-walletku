@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Merchant.init({
+    phone: DataTypes.INTEGER,
     pic_name: DataTypes.STRING,
     id_card: DataTypes.STRING,
     id_card_image: DataTypes.STRING,
@@ -24,7 +25,9 @@ module.exports = (sequelize, DataTypes) => {
     qrcode: DataTypes.STRING,
     balance: DataTypes.INTEGER,
     status: DataTypes.INTEGER,
-    last_login: DataTypes.DATE
+    last_login: DataTypes.DATE,
+    long: DataTypes.STRING,
+    lat: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Merchant',

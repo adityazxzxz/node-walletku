@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      phone: {
+        type: Sequelize.INTEGER
+      },
       pic_name: {
         type: Sequelize.STRING
       },
@@ -40,6 +43,12 @@ module.exports = {
       },
       last_login: {
         type: Sequelize.DATE
+      },
+      long: {
+        type: Sequelize.STRING,
+      },
+      lat: {
+        type: Sequelize.STRING,
       },
       created_at: {
         allowNull: true,
