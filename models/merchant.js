@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Merchant.init({
-    phone: DataTypes.INTEGER,
+    phone: DataTypes.STRING,
+    password: DataTypes.STRING,
     pic_name: DataTypes.STRING,
     id_card: DataTypes.STRING,
     id_card_image: DataTypes.STRING,

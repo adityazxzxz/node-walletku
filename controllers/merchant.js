@@ -3,12 +3,13 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs');
 const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
-const { signToken } = require('../middleware/jwt')
+const { generatorv2 } = require('../helpers/QRGenerator')
+const { signTokenMerchant } = require('../middleware/jwt')
 const { Merchant, Transaction, Sequelize } = require('../models/index')
 
 const register = async (req, res) => {
     try {
-        const {
+        let {
             phone,
             password,
             pic_name,
@@ -19,6 +20,8 @@ const register = async (req, res) => {
             long,
             lat
         } = req.body
+        const date = new Date()
+        password = decrypt(password)
 
         let merchant = JSON.parse(JSON.stringify(await Merchant.findOne({
             where: {
@@ -26,16 +29,17 @@ const register = async (req, res) => {
             }
         })))
         if (merchant) {
+            if (merchant.id_card === id_card) {
+                return res.status(409).json({
+                    message: 'ID Card already registerd'
+                })
+            }
             return res.status(409).json({
                 message: 'Phone already registered'
             })
         }
 
-        if (merchant.id_card === id_card) {
-            return res.status(409).json({
-                message: 'ID Card already registerd'
-            })
-        }
+
 
         let dataPassword = await hashPassword(password)
 
@@ -48,7 +52,9 @@ const register = async (req, res) => {
             bank_account_number,
             merchant_name,
             long,
-            lat
+            lat,
+            qrcode: `P${Math.floor(date.getTime())}`,
+            status: 0
         })
 
         return res.status(200).json({
@@ -83,7 +89,7 @@ const login = async (req, res) => {
             })
         }
 
-        const { exp, accessToken, refreshToken } = await signToken(cust)
+        const { exp, accessToken, refreshToken } = await signTokenMerchant(merchant)
         return res.status(200).json({
             exp,
             accessToken,
@@ -98,7 +104,30 @@ const login = async (req, res) => {
 
 }
 
+const showcode = async (req, res) => {
+    try {
+        const merchant = JSON.parse(JSON.stringify(await Merchant.findOne({
+            where: {
+                id: req.merchant.id
+            }
+        })))
+        return res.status(200).json({
+            code: generatorv2({
+                type: '00',
+                merchant_name: merchant.merchant_name,
+                id: merchant.qrcode
+            })
+        })
+    } catch (error) {
+        writeErrorLog('Show Code', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 module.exports = {
     register,
-    login
+    login,
+    showcode
 }

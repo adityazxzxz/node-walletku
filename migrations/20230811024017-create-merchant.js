@@ -9,7 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       phone: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
+      },
+      password: {
+        type: Sequelize.STRING
       },
       pic_name: {
         type: Sequelize.STRING

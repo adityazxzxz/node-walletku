@@ -131,9 +131,16 @@ const checkqr = () => {
 }
 
 const payment = () => {
+    const allowedType = ['00', '01']
     return [
         body('code').notEmpty().withMessage('not be empty'),
-        body('amount').notEmpty().withMessage('not be empty').isNumeric().withMessage('must be numeric')
+        body('amount').notEmpty().withMessage('not be empty').isNumeric().withMessage('must be numeric'),
+        body('type').notEmpty().custom((value) => {
+            if (!allowedType.includes(value)) {
+                throw new Error('must be 00 for static or 01 for dynamic');
+            }
+            return true;
+        }),
     ]
 }
 
