@@ -135,6 +135,11 @@ const createQRPayment = async (req, res) => {
                 id: req.merchant.id
             }
         })))
+        if (!merchant) {
+            return res.status(404).json({
+                message: 'Merchant not found'
+            })
+        }
         let qr = await Qrcode.create({
             code: `T${Math.floor(date.getTime())}`,
             merchant_id: req.merchant.id,
