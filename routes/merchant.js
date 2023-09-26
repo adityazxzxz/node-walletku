@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { register, login, showcode } = require('../controllers/merchant')
+const { register, login, showcode, createQRPayment, historyTransaction, profile } = require('../controllers/merchant')
 const {
     ktpValidator,
     validate } = require('../middleware/validator')
@@ -13,6 +13,9 @@ const router = Router()
 router.post('/register', register)
 router.post('/login', login)
 router.get('/code', verifyTokenMerchant, showcode)
+router.get('/profile', verifyTokenMerchant, profile)
+router.post('/payment', verifyTokenMerchant, createQRPayment)
+router.get('/payment/history', verifyTokenMerchant, historyTransaction)
 
 
 module.exports = router
