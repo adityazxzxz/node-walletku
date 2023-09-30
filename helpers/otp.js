@@ -32,9 +32,10 @@ API.interceptors.response.use(response => {
     return response;
 }, error => {
     if (error.response) {
-        writeErrorLog('OTP service', JSON.stringify(error.response.data))
+        writeErrorLog('OTP service Error', JSON.stringify(error.response.data))
     }
-    return Promise.reject(error);
+    return error.response;
+    // return Promise.reject(error);
 });
 
 module.exports = {

@@ -237,11 +237,39 @@ describe("Auth", () => {
                 "pin": "U2FsdGVkX19pqLEMcxWA0lW/7Qq/p09dkgWnRfbB5VU=",
                 "address": "harkit",
                 "emergency_name": "AAwer",
-                "emergency_phone": "123123"
+                "emergency_phone": "123123",
+                "stnk_name": "mrzxzxz"
             })
             .end((err, res) => {
                 response = res
                 res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register name not match with STNK name", (done) => {
+        chai.request(app)
+            .post('/api/v1/customer/personal_data')
+            .set({ Authorization: 'Bearer ' + user1.accessToken })
+            .send({
+                "fullname": "mrzxzxz",
+                "email": "mrzxzxz@gmail.com",
+                "id_card": "123456789",
+                "plat_no": "123123",
+                "province": "Banten",
+                "city": "Tangerang",
+                "district": "Kelapadua",
+                "sub_district": "Bencongan",
+                "zipcode": "123",
+                "pin": "U2FsdGVkX19pqLEMcxWA0lW/7Qq/p09dkgWnRfbB5VU=",
+                "address": "harkit",
+                "emergency_name": "AAwer",
+                "emergency_phone": "123123",
+                "stnk_name": "Aditya Pratama"
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(409)
                 done()
             })
     })
@@ -263,7 +291,8 @@ describe("Auth", () => {
                 "pin": "U2FsdGVkX19pqLEMcxWA0lW/7Qq/p09dkgWnRfbB5VU=",
                 "address": "harkit",
                 "emergency_name": "AAwer",
-                "emergency_phone": "123123"
+                "emergency_phone": "123123",
+                "stnk_name": "mrzxzxz"
             })
             .end((err, res) => {
                 response = res
@@ -338,11 +367,12 @@ describe("Auth", () => {
                 "pin": "U2FsdGVkX19pqLEMcxWA0lW/7Qq/p09dkgWnRfbB5VU=",
                 "address": "harkit",
                 "emergency_name": "AAwer",
-                "emergency_phone": "123123"
+                "emergency_phone": "123123",
+                "stnk_name": "mrzxzxz"
             })
             .end((err, res) => {
                 response = res
-                res.should.have.status(401)
+                res.should.have.status(404)
                 done()
             })
     })
