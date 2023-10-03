@@ -48,6 +48,39 @@ describe("Merchant", () => {
             })
     })
 
+    it("Change password merchant", (done) => {
+        chai.request(app)
+            .put('/api/v1/merchant/password')
+            .set({
+                Authorization: 'Bearer ' + merchant1.accessToken
+            })
+            .send({
+                "new_password": "U2FsdGVkX1/ET3Nnx8u16AtNdYhdz+NQS0+HE6Os6V0=",
+                "old_password": "U2FsdGVkX1/CzVPjqA0CI+8iHTdzJgcF5Kgc5IsHE6U="
+            })
+            .end((err, res) => {
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Login merchant new password", (done) => {
+        chai.request(app)
+            .post('/api/v1/merchant/login')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "081283398494",
+                "password": "U2FsdGVkX1/ET3Nnx8u16AtNdYhdz+NQS0+HE6Os6V0="
+            })
+            .end((err, res) => {
+                merchant1 = res.body
+                let decoded = JSON.parse(decrypt(jwt_decode(res.body.accessToken).data))
+                response = decoded
+                decoded.should.have.property('phone').that.equal('081283398494')
+                done()
+            })
+    })
+
     it("Show code QR", (done) => {
         chai.request(app)
             .get('/api/v1/merchant/code')

@@ -39,8 +39,6 @@ const register = async (req, res) => {
             })
         }
 
-
-
         let dataPassword = await hashPassword(password)
 
         await Merchant.create({
@@ -207,11 +205,54 @@ const profile = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    try {
+        let { new_password, old_password } = req.body
+        new_password = decrypt(new_password)
+        const merchant = JSON.parse(JSON.stringify(await Merchant.findOne({
+            where: {
+                id: req.merchant.id
+            }
+        })))
+        if (!merchant) {
+            return res.status(404).json({
+                message: 'Merchant not found'
+            })
+        }
+
+        const checkPassword = await verifyPassword(merchant.password, decrypt(old_password))
+        if (!checkPassword) {
+            return res.status(401).json({
+                message: 'password invalid'
+            })
+        }
+        let dataPassword = await hashPassword(new_password)
+
+        await Merchant.update({
+            password: dataPassword
+        }, {
+            where: {
+                id: req.merchant.id
+            }
+        })
+
+        return res.status(200).json({
+            message: 'Password has been updated'
+        })
+    } catch (error) {
+        writeErrorLog('Change password merchant', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 module.exports = {
     register,
     login,
     showcode,
     createQRPayment,
     historyTransaction,
-    profile
+    profile,
+    changePassword
 }
