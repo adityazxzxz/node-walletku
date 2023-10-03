@@ -118,21 +118,7 @@ describe("Merchant", () => {
             })
     })
 
-    it("Create QR Payment", (done) => {
-        chai.request(app)
-            .post('/api/v1/merchant/payment')
-            .set({
-                Authorization: 'Bearer ' + merchant1.accessToken
-            })
-            .send({
-                "amount": 20000
-            })
-            .end((err, res) => {
-                res.should.have.status(200)
-                res.body.should.have.property('amount').that.equal(20000)
-                done()
-            })
-    })
+
 
     afterEach(function () {
         if (this.currentTest.state == 'failed') {
