@@ -21,8 +21,8 @@ const whatsapp = ({ msisdn, otp }) => API.post('/whatsapp/otp/send', {
 // Menambahkan Interceptor untuk request
 API.interceptors.request.use(config => {
     // Menambahkan header kustom ke setiap request
-    config.headers['App-ID'] = 'f65562e7-deec-4d03-8493-4eda24ff783b'; // Ganti dengan header Anda
-    config.headers['Api-Key'] = '50A8jTMjkenHtGbroYFetVvcyf+gewST'; // Ganti dengan header Anda
+    config.headers['App-ID'] = process.env.OTP_APP_ID; // Ganti dengan header Anda
+    config.headers['Api-Key'] = process.env.OTP_API_KEY; // Ganti dengan header Anda
     return config;
 }, error => {
     return Promise.reject(error);

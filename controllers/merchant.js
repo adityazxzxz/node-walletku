@@ -148,18 +148,16 @@ const createQRPayment = async (req, res) => {
             exp_time: (Math.floor(date.getTime() / 1000)) + 3600
         })
         return res.status(200).json({
-            data: {
-                code: qr.code,
-                qrcode: generatorv2({
-                    type: '01',
-                    amount: qr.amount,
-                    merchant_name: merchant.merchant_name,
-                    id: qr.code
-                }),
+            code: qr.code,
+            qrcode: generatorv2({
+                type: '01',
                 amount: qr.amount,
-                exp_time: qr.exp_time,
-                status: qr.status
-            }
+                merchant_name: merchant.merchant_name,
+                id: qr.code
+            }),
+            amount: qr.amount,
+            exp_time: qr.exp_time,
+            status: qr.status
         })
     } catch (error) {
         writeErrorLog('Create QR Payment', error)
