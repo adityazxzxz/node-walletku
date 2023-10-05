@@ -98,6 +98,47 @@ const login = async (req, res) => {
 
 }
 
+const customers = async (req, res) => {
+    const { page = 1, limit = 10, phone, id_card, stnk_name, fullname } = req.query;
+    const offset = (page - 1) * limit;
+    let whereClause = {};
+
+    if (phone) {
+        whereClause.phone = { [Sequelize.Op.like]: `%${phone}%` };
+    }
+    if (id_card) {
+        whereClause.id_card = { [Sequelize.Op.like]: `%${id_card}%` };
+    }
+    if (stnk_name) {
+        whereClause.stnk_name = { [Sequelize.Op.like]: `%${stnk_name}%` };
+    }
+    if (fullname) {
+        whereClause.fullname = { [Sequelize.Op.like]: `%${fullname}%` };
+    }
+
+    try {
+        const customers = await Customer.findAll({
+            attributes: {
+                exclude: ['password', 'pin', 'otp']
+            },
+            where: whereClause,
+            offset: offset,
+            limit: parseInt(limit),
+        });
+        const totalCustomers = await Customer.count({ where: whereClause });
+        return res.json({
+            page: parseInt(page),
+            total_data: totalCustomers,
+            data: customers,
+        });
+    } catch (error) {
+        writeErrorLog('Admin List Customers', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 const approveCustomer = async (req, res) => {
     try {
         const { id } = req.params
@@ -312,5 +353,6 @@ module.exports = {
     login,
     approveCustomer,
     banOrDisbanCustomer,
-    changePassword
+    changePassword,
+    customers
 }

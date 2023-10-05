@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { changePassword, register, login, showcode, createQRPayment, historyTransaction, profile } = require('../controllers/merchant')
+const { login, customers } = require('../controllers/admin')
 const {
     ktpValidator,
     validate } = require('../middleware/validator')
@@ -10,13 +10,9 @@ const router = Router()
 
 // router.post('/upload', verifyToken, upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }, { name: 'bpkb', maxCount: 1 }]), uploadImage)
 // router.post('/personal_data', verifyToken, personalDataValidator(), validate, updatePersonal)
-router.post('/register', register)
+// router.post('/register', register)
 router.post('/login', login)
-router.get('/code', verifyTokenMerchant, showcode)
-router.get('/profile', verifyTokenMerchant, profile)
-router.put('/password', verifyTokenMerchant, changePassword)
-router.post('/payment', verifyTokenMerchant, createQRPayment)
-router.get('/payment/history', verifyTokenMerchant, historyTransaction)
-
+router.get('/customers', customers)
+// router.get('/profile', verifyTokenMerchant, profile)
 
 module.exports = router
