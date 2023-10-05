@@ -51,8 +51,31 @@ const generateQR = async (req, res) => {
     }
 }
 
+const activateCustomer = async (req, res) => {
+    try {
+        let cus = await Customer.update({
+            status: 3,
+            balance: req.body.balance || 1000000,
+            limit: req.body.limit || 1000000
+        }, {
+            where: {
+                phone: req.body.phone
+            }
+        })
+        return res.status(200).json({
+            cus
+        })
+    } catch (error) {
+        writeErrorLog('Playground active customer', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
 module.exports = {
     encrypt,
     decrypt,
-    generateQR
+    generateQR,
+    activateCustomer
 }
