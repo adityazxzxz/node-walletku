@@ -26,7 +26,52 @@ describe("Merchant", () => {
                 "lat": "12345"
             })
             .end((err, res) => {
+                response = res
                 res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register merchant registered phone", (done) => {
+        chai.request(app)
+            .post('/api/v1/merchant/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "081283398494",
+                "password": "U2FsdGVkX1/CzVPjqA0CI+8iHTdzJgcF5Kgc5IsHE6U=",
+                "pic_name": "Mr Baby",
+                "id_card": "123456789",
+                "bank_account": "BCA",
+                "bank_account_nmumber": "1234567890",
+                "merchant_name": "Ramen Kakek Jepang Gading Serpong",
+                "long": "12345",
+                "lat": "12345"
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(409)
+                done()
+            })
+    })
+
+    it("Register merchant registered id card", (done) => {
+        chai.request(app)
+            .post('/api/v1/merchant/register')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "081283398494",
+                "password": "U2FsdGVkX1/CzVPjqA0CI+8iHTdzJgcF5Kgc5IsHE6U=",
+                "pic_name": "Mr Baby",
+                "id_card": "123456789",
+                "bank_account": "BCA",
+                "bank_account_nmumber": "1234567890",
+                "merchant_name": "Ramen Kakek Jepang Gading Serpong",
+                "long": "12345",
+                "lat": "12345"
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(409)
                 done()
             })
     })
@@ -42,7 +87,7 @@ describe("Merchant", () => {
             .end((err, res) => {
                 merchant1 = res.body
                 let decoded = JSON.parse(decrypt(jwt_decode(res.body.accessToken).data))
-                response = decoded
+                response = res
                 decoded.should.have.property('phone').that.equal('081283398494')
                 done()
             })
@@ -59,6 +104,7 @@ describe("Merchant", () => {
                 "old_password": "U2FsdGVkX1/CzVPjqA0CI+8iHTdzJgcF5Kgc5IsHE6U="
             })
             .end((err, res) => {
+                response = res
                 res.should.have.status(200)
                 done()
             })
@@ -75,7 +121,7 @@ describe("Merchant", () => {
             .end((err, res) => {
                 merchant1 = res.body
                 let decoded = JSON.parse(decrypt(jwt_decode(res.body.accessToken).data))
-                response = decoded
+                response = res
                 decoded.should.have.property('phone').that.equal('081283398494')
                 done()
             })
@@ -88,6 +134,7 @@ describe("Merchant", () => {
                 Authorization: 'Bearer ' + merchant1.accessToken
             })
             .end((err, res) => {
+                response = res
                 res.should.have.status(200)
                 res.body.should.have.property('qrcode')
                 done()
@@ -101,6 +148,7 @@ describe("Merchant", () => {
                 Authorization: 'Bearer ' + merchant1.accessToken
             })
             .end((err, res) => {
+                response = res
                 res.should.have.status(200)
                 done()
             })
@@ -113,6 +161,7 @@ describe("Merchant", () => {
                 Authorization: 'Bearer ' + merchant1.accessToken
             })
             .end((err, res) => {
+                response = res
                 res.should.have.status(200)
                 done()
             })

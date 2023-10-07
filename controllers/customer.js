@@ -188,7 +188,7 @@ const checkKTP = async (req, res) => {
             }
         })
         if (cust) {
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'KTP already exist'
             })
         } else {
@@ -212,7 +212,7 @@ const checkSTNK = async (req, res) => {
             }
         })
         if (cust) {
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'STNK name already exist'
             })
         } else {
@@ -277,11 +277,11 @@ const updatePersonal = async (req, res) => {
 
         if (checkCustomer) {
             if (checkCustomer.id_card === id_card) {
-                return res.status(401).json({
+                return res.status(409).json({
                     message: 'KTP already registered'
                 })
             } else if (checkCustomer.stnk_name === stnk_name) {
-                return res.status(401).json({
+                return res.status(409).json({
                     message: 'STNK name already registered'
                 })
             }
@@ -374,7 +374,7 @@ const uploadImage = async (req, res) => {
                     });
                 });
             }
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'Customer already request'
             })
         }
@@ -409,7 +409,7 @@ const uploadKtp = async (req, res) => {
             if (req.file) {
                 fs.unlinkSync(req.file.path);
             }
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'Customer already request'
             })
         }
@@ -440,7 +440,7 @@ const uploadBpkb = async (req, res) => {
             if (req.file) {
                 fs.unlinkSync(req.file.path);
             }
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'Customer already request'
             })
         }
@@ -471,7 +471,7 @@ const uploadSelfie = async (req, res) => {
             if (req.file) {
                 fs.unlinkSync(req.file.path);
             }
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'Customer already request'
             })
         }

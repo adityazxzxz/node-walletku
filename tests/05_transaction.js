@@ -59,7 +59,7 @@ describe("Transaction", () => {
             })
     })
 
-    it("Unable Submit payment", (done) => {
+    it("Submit payment with nonactive customer", (done) => {
         chai.request(app)
             .post('/api/v1/transaction/payment')
             .set({
@@ -71,6 +71,75 @@ describe("Transaction", () => {
                 "type": "01"
             })
             .end((err, res) => {
+                res.should.have.status(409)
+                done()
+            })
+    })
+
+    it("Set enable customer with api playground (not recommen for production)", (done) => {
+        chai.request(app)
+            .post('/api/v1/playground/activate_customer')
+            .send({
+                "phone": "081283398495",
+                "balance": 1000000,
+                "limit": 1000000
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Submit payment with active customer", (done) => {
+        chai.request(app)
+            .post('/api/v1/transaction/payment')
+            .set({
+                Authorization: 'Bearer ' + customer1.accessToken
+            })
+            .send({
+                "code": transaction.code,
+                "amount": 20000,
+                "type": "01"
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Merchant Create QR Payment for not enough balance customer", (done) => {
+        chai.request(app)
+            .post('/api/v1/merchant/payment')
+            .set({
+                Authorization: 'Bearer ' + merchant1.accessToken
+            })
+            .send({
+                "amount": 1000000000
+            })
+            .end((err, res) => {
+                response = res
+                transaction = res.body
+                res.should.have.status(200)
+                res.body.should.have.property('amount').that.equal(1000000000)
+                done()
+            })
+    })
+
+    it("Submit payment with not enough customer balance", (done) => {
+        chai.request(app)
+            .post('/api/v1/transaction/payment')
+            .set({
+                Authorization: 'Bearer ' + customer1.accessToken
+            })
+            .send({
+                "code": transaction.code,
+                "amount": 20000,
+                "type": "01"
+            })
+            .end((err, res) => {
+                response = res
                 res.should.have.status(409)
                 done()
             })

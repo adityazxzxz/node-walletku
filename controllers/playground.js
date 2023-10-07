@@ -62,8 +62,14 @@ const activateCustomer = async (req, res) => {
                 phone: req.body.phone
             }
         })
+        let customer = await Customer.findOne({
+            attributes: ['phone', 'fullname', 'balance', 'status'],
+            where: {
+                phone: req.body.phone
+            }
+        })
         return res.status(200).json({
-            cus
+            customer
         })
     } catch (error) {
         writeErrorLog('Playground active customer', error)

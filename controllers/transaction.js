@@ -115,6 +115,7 @@ const payment = async (req, res) => {
                     code: qrcode
                 }
             })
+            amount = query.amount
         } else if (qrcode.substring(0, 1) === 'P') {
             qrtype = 'static'
             query = await Merchant.findOne({

@@ -296,7 +296,7 @@ describe("Auth", () => {
             })
             .end((err, res) => {
                 response = res
-                res.should.have.status(401)
+                res.should.have.status(409)
                 done()
             })
     })
