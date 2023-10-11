@@ -7,7 +7,7 @@ const { generatorv2 } = require('../helpers/QRGenerator')
 const { signToken } = require('../middleware/jwt_merchant')
 const { Merchant, Transaction, Qrcode, Sequelize } = require('../models/index');
 const { randomNumber } = require('../helpers/utils');
-const { set, get, is_exists } = require('../helpers/redis')
+const { set, get, is_exists, del } = require('../helpers/redis')
 const API = require('../helpers/otp')
 
 const register = async (req, res) => {
@@ -81,13 +81,14 @@ const submit_otp_register = async (req, res) => {
                 ...merchant_otp,
                 attempt: merchant_otp.attempt + 1
             }
-            await set(phone, encrypt(JSON.stringify(newvalue)))
+            await set(redisKey, encrypt(JSON.stringify(newvalue)))
             return res.status(400).json({
                 message: 'OTP invalid'
             })
         }
         let merchant = await Merchant.create(merchant_otp.data)
         const { exp, accessToken, refreshToken } = await signToken(merchant)
+        await del(redisKey)
         return res.status(200).json({
             exp,
             accessToken,

@@ -6,6 +6,7 @@ try {
     redis = new Redis({
         host: process.env.REDIS_HOST || 'localhost',
         port: process.env.REDIS_PORT || 6379,
+        timeout: 2000
         // enableOfflineQueue: false
     })
 } catch (error) {
@@ -22,5 +23,8 @@ module.exports = {
     },
     is_exists: (key) => {
         return redis.exists(key)
+    },
+    del: (key) => {
+        return redis.del(key)
     }
 }
