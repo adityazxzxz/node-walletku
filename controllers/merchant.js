@@ -5,20 +5,16 @@ const fs = require('fs');
 const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
 const { generatorv2 } = require('../helpers/QRGenerator')
 const { signToken } = require('../middleware/jwt_merchant')
-const { Merchant, Transaction, Qrcode, Sequelize } = require('../models/index')
+const { Merchant, Transaction, Qrcode, Sequelize } = require('../models/index');
+const { randomNumber } = require('../helpers/utils');
+const { set, get, is_exists } = require('../helpers/redis')
+const API = require('../helpers/otp')
 
 const register = async (req, res) => {
     try {
         let {
             phone,
-            password,
-            pic_name,
-            id_card,
-            bank_account,
-            bank_account_number,
-            merchant_name,
-            long,
-            lat
+            password
         } = req.body
         const date = new Date()
         password = decrypt(password)
@@ -29,21 +25,114 @@ const register = async (req, res) => {
             }
         })))
         if (merchant) {
-            if (merchant.id_card === id_card) {
-                return res.status(409).json({
-                    message: 'ID Card already registerd'
-                })
-            }
             return res.status(409).json({
                 message: 'Phone already registered'
             })
         }
 
+        let otp = randomNumber(6).toString()
         let dataPassword = await hashPassword(password)
+        await set('REG' + phone, 60, encrypt(JSON.stringify({
+            otp,
+            attempt: 0,
+            type: 'register',
+            data: {
+                phone,
+                password: dataPassword,
+                pic_name: 'user' + date.getTime(),
+                qrcode: `P${Math.floor(date.getTime())}`,
+                status: 0,
+                balance: 0
+            },
+            createdtime: Math.floor(date.getTime())
+        })))
 
-        await Merchant.create({
-            phone,
-            password: dataPassword,
+        const { data, status } = await API.whatsapp({
+            msisdn: phone,
+            otp
+        })
+
+        return res.status(200).json({
+            message: 'Check otp on your phone',
+            ...(process.env.NODE_ENV !== 'production' ? { otp: encrypt(otp) } : null)
+        })
+    } catch (error) {
+        writeErrorLog('Register Merchant', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
+const submit_otp_register = async (req, res) => {
+    try {
+        let { phone, otp } = req.body
+        otp = decrypt(otp)
+        let redisKey = 'REG' + phone
+        let check = await is_exists(redisKey)
+        if (!check) {
+            return res.status(404).json({
+                message: 'Request otp not found, please try again.'
+            })
+        }
+        let merchant_otp = JSON.parse(decrypt(await get(redisKey)))
+        if (otp != merchant_otp.otp) {
+            let newvalue = {
+                ...merchant_otp,
+                attempt: merchant_otp.attempt + 1
+            }
+            await set(phone, encrypt(JSON.stringify(newvalue)))
+            return res.status(400).json({
+                message: 'OTP invalid'
+            })
+        }
+        let merchant = await Merchant.create(merchant_otp.data)
+        const { exp, accessToken, refreshToken } = await signToken(merchant)
+        return res.status(200).json({
+            exp,
+            accessToken,
+            refreshToken
+        })
+    } catch (error) {
+        writeErrorLog('Submit otp merchant register', error)
+        return res.status(500).json({
+            message: 'Internal Error'
+        })
+    }
+}
+
+const save_personal_data = async (req, res) => {
+    try {
+        let {
+            pic_name,
+            id_card,
+            bank_account,
+            bank_account_number,
+            merchant_name,
+            long,
+            lat
+        } = req.body
+        const date = new Date()
+
+        let merchant = JSON.parse(JSON.stringify(await Merchant.findOne({
+            where: {
+                id: req.merchant.id,
+            }
+        })))
+        if (merchant) {
+            if (merchant.status > 0) {
+                return res.status(409).json({
+                    message: 'Merchant already put data'
+                })
+            }
+            if (merchant.id_card === id_card) {
+                return res.status(409).json({
+                    message: 'ID Card already registerd'
+                })
+            }
+        }
+
+        await Merchant.update({
             pic_name,
             id_card,
             bank_account,
@@ -51,13 +140,17 @@ const register = async (req, res) => {
             merchant_name,
             long,
             lat,
-            qrcode: `P${Math.floor(date.getTime())}`,
-            status: 0
+            status: 1
+        }, {
+            where: {
+                id: req.merchant.id
+            }
         })
 
         return res.status(200).json({
             message: 'Data has been saved'
         })
+
     } catch (error) {
         writeErrorLog('Register Merchant', error)
         return res.status(500).json({
@@ -249,6 +342,8 @@ const changePassword = async (req, res) => {
 
 module.exports = {
     register,
+    submit_otp_register,
+    save_personal_data,
     login,
     showcode,
     createQRPayment,
