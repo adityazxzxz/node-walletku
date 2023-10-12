@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { login, customers } = require('../controllers/admin')
+const { store, login, customers } = require('../controllers/admin')
 const {
     ktpValidator,
     validate } = require('../middleware/validator')
@@ -12,6 +12,7 @@ const router = Router()
 // router.post('/personal_data', verifyToken, personalDataValidator(), validate, updatePersonal)
 // router.post('/register', register)
 router.post('/login', login)
+router.post('/', store)
 router.get('/customers', customers)
 // router.get('/profile', verifyTokenMerchant, profile)
 

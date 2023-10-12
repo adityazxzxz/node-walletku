@@ -76,12 +76,17 @@ const submit_otp_register = async (req, res) => {
             })
         }
         let merchant_otp = JSON.parse(decrypt(await get(redisKey)))
+        if (merchant_otp.attempt >= 3) {
+            return res.status(409).json({
+                message: 'You already invalid otp for 3 times, please wait for 30 minutes'
+            })
+        }
         if (otp != merchant_otp.otp) {
             let newvalue = {
                 ...merchant_otp,
                 attempt: merchant_otp.attempt + 1
             }
-            await set(redisKey, encrypt(JSON.stringify(newvalue)))
+            await set(redisKey, (newvalue.attempt >= 3 ? 1800 : 60), encrypt(JSON.stringify(newvalue)))
             return res.status(400).json({
                 message: 'OTP invalid'
             })

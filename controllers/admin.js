@@ -7,10 +7,10 @@ const { generatorv2 } = require('../helpers/QRGenerator')
 const { signToken } = require('../middleware/jwt_merchant')
 const { Merchant, Transaction, Qrcode, Customer, Sequelize } = require('../models/index')
 
-const register = async (req, res) => {
+const store = async (req, res) => {
     try {
         let {
-            email,
+            username,
             password,
             fullname,
             role
@@ -18,43 +18,31 @@ const register = async (req, res) => {
         const date = new Date()
         password = decrypt(password)
 
-        let merchant = JSON.parse(JSON.stringify(await Admin.findOne({
+        let admin = JSON.parse(JSON.stringify(await Admin.findOne({
             where: {
-                email
+                username
             }
         })))
-        if (merchant) {
-            if (merchant.id_card === id_card) {
-                return res.status(409).json({
-                    message: 'ID Card already registerd'
-                })
-            }
+        if (admin) {
             return res.status(409).json({
-                message: 'Phone already registered'
+                message: 'Username already exists'
             })
         }
 
         let dataPassword = await hashPassword(password)
 
-        await Merchant.create({
-            phone,
+        await Admin.create({
+            username,
             password: dataPassword,
-            pic_name,
-            id_card,
-            bank_account,
-            bank_account_number,
-            merchant_name,
-            long,
-            lat,
-            qrcode: `P${Math.floor(date.getTime())}`,
-            status: 0
+            fullname,
+            role,
         })
 
         return res.status(200).json({
             message: 'Data has been saved'
         })
     } catch (error) {
-        writeErrorLog('Register Merchant', error)
+        writeErrorLog('Add Admin', error)
         return res.status(500).json({
             message: 'Internal Error'
         })
@@ -62,17 +50,17 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    const { email, password } = req.body
+    const { username, password } = req.body
     try {
         const admin = JSON.parse(JSON.stringify(await Admin.findOne({
-            attributes: ['email', 'role'],
+            attributes: ['username', 'role'],
             where: {
-                email
+                username
             }
         })))
         if (!admin) {
             return res.status(404).json({
-                message: 'Email not found'
+                message: 'Username not found'
             })
         }
 
@@ -354,5 +342,6 @@ module.exports = {
     approveCustomer,
     banOrDisbanCustomer,
     changePassword,
-    customers
+    customers,
+    store
 }

@@ -1,5 +1,4 @@
 'use strict';
-const { encrypt, decrypt, hashPassword, verifyPassword } = require('../helpers/encrypt')
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -13,11 +12,9 @@ module.exports = {
      * }], {});
     */
 
-    await queryInterface.bulkInsert('admins', [{
-      username: 'super',
-      fullname: 'Super User',
-      role: 1,
-      password: await hashPassword('12345678'),
+    await queryInterface.bulkInsert('roles', [{
+      id: 1,
+      name: 'super',
       createdAt: new Date(),
       updatedAt: new Date(),
     }], {});
