@@ -2,6 +2,7 @@ const { Router } = require('express')
 const { save_personal_data, submit_otp_register, changePassword, register, login, showcode, createQRPayment, historyTransaction, profile } = require('../controllers/merchant')
 const {
     ktpValidator,
+    otp,
     validate } = require('../middleware/validator')
 const { verifyToken } = require('../middleware/jwt')
 const { verifyToken: verifyTokenMerchant } = require('../middleware/jwt_merchant')
@@ -11,7 +12,7 @@ const router = Router()
 // router.post('/upload', verifyToken, upload.fields([{ name: 'id_card', maxCount: 1 }, { name: 'selfie', maxCount: 1 }, { name: 'bpkb', maxCount: 1 }]), uploadImage)
 // router.post('/personal_data', verifyToken, personalDataValidator(), validate, updatePersonal)
 router.post('/register', register)
-router.post('/verify', submit_otp_register)
+router.post('/verify', otp(), validate, submit_otp_register)
 router.post('/login', login)
 router.post('/personal_data', verifyTokenMerchant, save_personal_data)
 router.get('/code', verifyTokenMerchant, showcode)

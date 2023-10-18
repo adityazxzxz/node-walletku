@@ -208,6 +208,11 @@ const showcode = async (req, res) => {
                 id: req.merchant.id
             }
         })))
+        if (merchant.status < 1) {
+            return res.status(409).json({
+                message: 'Merchant not found or not active'
+            })
+        }
         return res.status(200).json({
             qrcode: generatorv2({
                 type: '00',

@@ -27,6 +27,22 @@ describe("Merchant", () => {
             })
             .end((err, res) => {
                 response = res
+                otp1 = res.body.otp
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Register merchant verifying OTP", (done) => {
+        chai.request(app)
+            .post('/api/v1/merchant/verify')
+            .set({ timestamp: `12341` })
+            .send({
+                "phone": "081283398494",
+                "otp": otp1
+            })
+            .end((err, res) => {
+                response = res
                 res.should.have.status(200)
                 done()
             })
@@ -49,6 +65,7 @@ describe("Merchant", () => {
             })
             .end((err, res) => {
                 response = res
+                otp1 = res.body.otp
                 res.should.have.status(409)
                 done()
             })
@@ -127,7 +144,42 @@ describe("Merchant", () => {
             })
     })
 
-    it("Show code QR", (done) => {
+    it("Show code QR Not Active account", (done) => {
+        chai.request(app)
+            .get('/api/v1/merchant/code')
+            .set({
+                Authorization: 'Bearer ' + merchant1.accessToken
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(409)
+                done()
+            })
+    })
+
+    it("Merchant save personal data for activate account", (done) => {
+        chai.request(app)
+            .post('/api/v1/merchant/personal_data')
+            .set({
+                Authorization: 'Bearer ' + merchant1.accessToken
+            })
+            .send({
+                "pic_name": "Mr Baby",
+                "id_card": "123456789",
+                "bank_account": "BCA",
+                "bank_account_number": "1234567890",
+                "merchant_name": "Ramen Kakek Jepang Gading Serpong",
+                "long": "12345",
+                "lat": "12345"
+            })
+            .end((err, res) => {
+                response = res
+                res.should.have.status(200)
+                done()
+            })
+    })
+
+    it("Show code QR Active Merchant", (done) => {
         chai.request(app)
             .get('/api/v1/merchant/code')
             .set({
